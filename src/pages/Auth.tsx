@@ -7,60 +7,46 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export const Auth = () => {
   const [isLogin, setIsLogin] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // For demo purposes, just navigate to dashboard
+    setLoading(true);
+    // Simulate a small delay for better UX feedback
+    await new Promise(resolve => setTimeout(resolve, 800));
     navigate('/dashboard');
   };
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 relative overflow-hidden bg-slate-950">
-      {/* Animated Background Elements */}
+      {/* Optimized Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 0],
-            x: [0, 100, 0],
-            y: [0, 50, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-primary-600/20 rounded-full blur-[120px]"
-        />
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.5, 1],
-            rotate: [0, -120, 0],
-            x: [0, -150, 0],
-            y: [0, 100, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-secondary-600/20 rounded-full blur-[120px]"
-        />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay" />
+        <div className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-primary-600/10 rounded-full blur-[100px]" />
+        <div className="absolute -bottom-[10%] -right-[10%] w-[60%] h-[60%] bg-secondary-600/10 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
       </div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md relative z-10"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-[400px] relative z-10"
       >
-        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-3xl shadow-2xl overflow-hidden">
-          <div className="p-8">
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2rem] shadow-2xl overflow-hidden">
+          <div className="p-6 sm:p-10">
             <div className="text-center mb-8">
               <motion.div 
-                initial={{ scale: 0.5 }}
-                animate={{ scale: 1 }}
-                className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 mb-4 shadow-lg shadow-primary-500/20"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 mb-4 shadow-lg shadow-primary-500/20"
               >
-                <Sparkles className="h-8 w-8 text-white" />
+                <Sparkles className="h-7 w-7 text-white" />
               </motion.div>
-              <h1 className="text-3xl font-bold text-white mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                 {isLogin ? 'Welcome Back' : 'Create Account'}
               </h1>
-              <p className="text-slate-400">
+              <p className="text-slate-400 text-sm sm:text-base">
                 {isLogin 
                   ? 'Enter your credentials to access your account' 
                   : 'Join our community of premium digital creators'}
@@ -71,52 +57,54 @@ export const Auth = () => {
               <AnimatePresence mode="wait">
                 {!isLogin && (
                   <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
+                    key="signup-fields"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
                     className="space-y-4"
                   >
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
-                      <Input 
-                        type="text" 
-                        placeholder="Full Name" 
-                        className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
-                        required
-                      />
-                    </div>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
-                      <Input 
-                        type="tel" 
-                        placeholder="Phone Number" 
-                        className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
-                        required
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
-                <Input 
-                  type="email" 
-                  placeholder="Gmail Address" 
-                  className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
-                  required
-                />
-              </div>
-
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
-                <Input 
-                  type="password" 
-                  placeholder="Password" 
-                  className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
-                  required
-                />
-              </div>
+                        <Input 
+                          type="text" 
+                          placeholder="Full Name" 
+                          className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 transition-all duration-200"
+                          required
+                        />
+                      </div>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                        <Input 
+                          type="tel" 
+                          placeholder="Phone Number" 
+                          className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 transition-all duration-200"
+                          required
+                        />
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+  
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                  <Input 
+                    type="email" 
+                    placeholder="Gmail Address" 
+                    className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 transition-all duration-200"
+                    required
+                  />
+                </div>
+  
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                  <Input 
+                    type="password" 
+                    placeholder="Password" 
+                    className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 transition-all duration-200"
+                    required
+                  />
+                </div>
 
               {isLogin && (
                 <div className="flex justify-end">
@@ -126,9 +114,23 @@ export const Auth = () => {
                 </div>
               )}
 
-              <Button type="submit" variant="gradient" className="w-full h-12 text-base font-semibold group">
-                {isLogin ? 'Sign In' : 'Sign Up'}
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              <Button 
+                type="submit" 
+                variant="gradient" 
+                className="w-full h-12 text-base font-semibold group"
+                disabled={loading}
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Processing...</span>
+                  </div>
+                ) : (
+                  <>
+                    {isLogin ? 'Sign In' : 'Sign Up'}
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </Button>
             </form>
           </div>
