@@ -5,6 +5,7 @@ import { Product } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Star, CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export const ProductDetails = () => {
   const { id } = useParams();
@@ -32,9 +33,28 @@ export const ProductDetails = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center">
-        <Loader2 className="h-12 w-12 text-primary-500 animate-spin mb-4" />
-        <p className="text-slate-500">Loading product details...</p>
+      <div className="bg-slate-50 py-12 flex-1">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="space-y-6">
+              <Skeleton className="aspect-[4/3] w-full rounded-3xl" />
+              <div className="grid grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <Skeleton key={i} className="aspect-square rounded-xl" />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="flex gap-3">
+                <Skeleton className="h-8 w-24 rounded-full" />
+                <Skeleton className="h-8 w-32 rounded-full" />
+              </div>
+              <Skeleton className="h-12 w-3/4" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-48 w-full rounded-2xl" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { productApi } from '@/lib/supabase';
 import { Product } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = React.useState('purchases');
@@ -81,9 +82,29 @@ export const Dashboard = () => {
           >
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 min-h-[500px]">
               {loading ? (
-                <div className="flex flex-col items-center justify-center h-[400px]">
-                  <Loader2 className="h-10 w-10 text-primary-500 animate-spin mb-4" />
-                  <p className="text-slate-500">Loading your data...</p>
+                <div className="space-y-8">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="h-16 w-16 rounded-full" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-6 w-32" />
+                      <Skeleton className="h-4 w-48" />
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    {[1, 2].map((i) => (
+                      <div key={i} className="flex flex-col sm:flex-row gap-6 p-6 rounded-2xl border border-slate-100">
+                        <Skeleton className="w-full sm:w-48 aspect-[4/3] rounded-xl" />
+                        <div className="flex-1 space-y-4">
+                          <Skeleton className="h-6 w-1/2" />
+                          <Skeleton className="h-4 w-full" />
+                          <div className="flex justify-between items-center pt-4">
+                            <Skeleton className="h-4 w-32" />
+                            <Skeleton className="h-10 w-32 rounded-lg" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <>

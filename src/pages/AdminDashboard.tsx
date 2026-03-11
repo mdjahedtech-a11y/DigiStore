@@ -4,6 +4,7 @@ import { Users, Package, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, L
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { productApi } from '@/lib/supabase';
 import { Product } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 const data = [
   { name: 'Jan', sales: 4000, revenue: 2400 },
@@ -120,8 +121,22 @@ export const AdminDashboard = () => {
           <h3 className="text-lg font-bold text-slate-900 mb-6">Recent Sales</h3>
           <div className="space-y-6">
             {loading ? (
-              <div className="flex justify-center py-10">
-                <Loader2 className="h-8 w-8 text-primary-500 animate-spin" />
+              <div className="space-y-6">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-20" />
+                      </div>
+                    </div>
+                    <div className="text-right space-y-2">
+                      <Skeleton className="h-4 w-16 ml-auto" />
+                      <Skeleton className="h-3 w-12 ml-auto" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : products.length > 0 ? (
               products.slice(0, 5).map((product, i) => (

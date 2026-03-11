@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { productApi, CATEGORIES } from '@/lib/supabase';
 import { Product } from '@/types';
+import { ProductCardSkeleton } from '@/components/ui/Skeleton';
 
 export const Home = () => {
   const [activeCategory, setActiveCategory] = React.useState('All');
@@ -146,9 +147,10 @@ export const Home = () => {
           </div>
           
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="h-12 w-12 text-primary-500 animate-spin mb-4" />
-              <p className="text-slate-500">Loading premium products...</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
             </div>
           ) : error ? (
             <div className="text-center py-20 bg-white rounded-3xl border border-slate-200">
@@ -181,12 +183,12 @@ export const Home = () => {
             <p className="text-slate-500">Find exactly what you need from our extensive collection of digital assets.</p>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
+          <div className="flex overflow-x-auto pb-4 sm:pb-0 sm:flex-wrap justify-start sm:justify-center gap-2 mb-12 no-scrollbar">
             {CATEGORIES.map((category) => (
               <button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   activeCategory === category
                     ? 'bg-slate-900 text-white shadow-md'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -199,8 +201,8 @@ export const Home = () => {
           
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-80 bg-slate-100 rounded-2xl animate-pulse" />
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <ProductCardSkeleton key={i} />
               ))}
             </div>
           ) : (
