@@ -13,6 +13,17 @@ export const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    
+    // For demo purposes, save user info to localStorage
+    const formData = new FormData(e.target as HTMLFormElement);
+    const userInfo = {
+      name: formData.get('name') || 'John Doe',
+      email: formData.get('email'),
+      phone: formData.get('phone') || '+1 234 567 890',
+    };
+    
+    localStorage.setItem('user_profile', JSON.stringify(userInfo));
+    
     // Simulate a small delay for better UX feedback
     await new Promise(resolve => setTimeout(resolve, 800));
     navigate('/dashboard');
@@ -67,6 +78,7 @@ export const Auth = () => {
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
                         <Input 
+                          name="name"
                           type="text" 
                           placeholder="Full Name" 
                           className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 transition-all duration-200"
@@ -76,6 +88,7 @@ export const Auth = () => {
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
                         <Input 
+                          name="phone"
                           type="tel" 
                           placeholder="Phone Number" 
                           className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 transition-all duration-200"
@@ -89,6 +102,7 @@ export const Auth = () => {
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
                   <Input 
+                    name="email"
                     type="email" 
                     placeholder="Gmail Address" 
                     className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 transition-all duration-200"
