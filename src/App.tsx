@@ -11,6 +11,7 @@ import { ProductDetails } from './pages/ProductDetails';
 import { Dashboard } from './pages/Dashboard';
 import { AffiliateDashboard } from './pages/AffiliateDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { Auth } from './pages/Auth';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         {/* Public & User Routes */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/affiliate" element={<AffiliateDashboard />} />

@@ -46,7 +46,7 @@ export const MainLayout = () => {
                 0
               </span>
             </Link>
-            <Link to="/dashboard">
+            <Link to="/auth">
               <Button variant="outline" size="sm" className="gap-2 rounded-full">
                 <User className="h-4 w-4" />
                 Account
@@ -82,7 +82,7 @@ export const MainLayout = () => {
               </div>
               <Link to="/products" className="p-2 text-slate-700 font-medium hover:bg-slate-50 rounded-lg">Products</Link>
               <Link to="/affiliate" className="p-2 text-slate-700 font-medium hover:bg-slate-50 rounded-lg">Affiliates</Link>
-              <Link to="/dashboard" className="p-2 text-slate-700 font-medium hover:bg-slate-50 rounded-lg">Dashboard</Link>
+              <Link to="/auth" className="p-2 text-slate-700 font-medium hover:bg-slate-50 rounded-lg">Account</Link>
               <Link to="/admin" className="p-2 text-primary-600 font-medium hover:bg-primary-50 rounded-lg">Admin Panel</Link>
             </div>
           </motion.div>
@@ -113,7 +113,7 @@ export const MainLayout = () => {
             <ul className="space-y-2 text-sm">
               <li><Link to="/products" className="hover:text-white transition-colors">Browse Products</Link></li>
               <li><Link to="/affiliate" className="hover:text-white transition-colors">Become an Affiliate</Link></li>
-              <li><Link to="/dashboard" className="hover:text-white transition-colors">My Dashboard</Link></li>
+              <li><Link to="/auth" className="hover:text-white transition-colors">My Account</Link></li>
             </ul>
           </div>
           <div>
