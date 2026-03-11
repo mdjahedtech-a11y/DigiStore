@@ -1,18 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MOCK_PRODUCTS } from '@/lib/supabase';
+import { productApi } from '@/lib/supabase';
+import { Product } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { Star, CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor } from 'lucide-react';
+import { Star, CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const ProductDetails = () => {
   const { id } = useParams();
-  const product = MOCK_PRODUCTS.find(p => p.id === id);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!product) {
+  useEffect(() => {
+    const loadProduct = async () => {
+      if (!id) return;
+      try {
+        setLoading(true);
+        const data = await productApi.getById(id);
+        setProduct(data);
+      } catch (err: any) {
+        console.error('Error loading product:', err);
+        setError('Product not found or connection error.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [id]);
+
+  if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center">
-        <h2 className="text-2xl font-bold text-slate-900 mb-4">Product not found</h2>
+        <Loader2 className="h-12 w-12 text-primary-500 animate-spin mb-4" />
+        <p className="text-slate-500">Loading product details...</p>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <h2 className="text-2xl font-bold text-slate-900 mb-4">{error || 'Product not found'}</h2>
         <Link to="/">
           <Button>Return Home</Button>
         </Link>

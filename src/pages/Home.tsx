@@ -1,20 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, Sparkles, Zap, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, ShieldCheck, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ui/ProductCard';
-import { MOCK_PRODUCTS, CATEGORIES } from '@/lib/supabase';
+import { productApi, CATEGORIES } from '@/lib/supabase';
+import { Product } from '@/types';
 
 export const Home = () => {
   const [activeCategory, setActiveCategory] = React.useState('All');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await productApi.getAll();
+        setProducts(data);
+      } catch (err: any) {
+        console.error('Error loading products:', err);
+        setError('Failed to load products. Please check your Supabase connection.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
   
   const filteredProducts = activeCategory === 'All' 
-    ? MOCK_PRODUCTS 
-    : MOCK_PRODUCTS.filter(p => p.category === activeCategory);
+    ? products 
+    : products.filter(p => p.category === activeCategory);
 
-  const featuredProducts = MOCK_PRODUCTS.filter(p => p.featured);
-  const trendingProducts = MOCK_PRODUCTS.filter(p => p.trending);
+  const featuredProducts = products.filter(p => p.featured);
 
   return (
     <div className="flex flex-col">
@@ -125,19 +145,31 @@ export const Home = () => {
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProducts.map((product, i) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader2 className="h-12 w-12 text-primary-500 animate-spin mb-4" />
+              <p className="text-slate-500">Loading premium products...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-20 bg-white rounded-3xl border border-slate-200">
+              <p className="text-rose-500 font-medium mb-4">{error}</p>
+              <Button onClick={() => window.location.reload()} variant="outline">Try Again</Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProducts.map((product, i) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -165,20 +197,28 @@ export const Home = () => {
             ))}
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product, i) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-80 bg-slate-100 rounded-2xl animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((product, i) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
+            </div>
+          )}
           
-          {filteredProducts.length === 0 && (
+          {!loading && filteredProducts.length === 0 && !error && (
             <div className="text-center py-20">
               <p className="text-slate-500 text-lg">No products found in this category.</p>
             </div>

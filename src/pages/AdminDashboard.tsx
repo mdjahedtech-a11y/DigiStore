@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Users, Package, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, Package, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, Loader2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { productApi } from '@/lib/supabase';
+import { Product } from '@/types';
 
 const data = [
   { name: 'Jan', sales: 4000, revenue: 2400 },
@@ -14,6 +16,23 @@ const data = [
 ];
 
 export const AdminDashboard = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const data = await productApi.getAll();
+        setProducts(data);
+      } catch (err) {
+        console.error('Error loading admin data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -33,7 +52,7 @@ export const AdminDashboard = () => {
           { title: 'Total Revenue', value: '$45,231.89', change: '+20.1%', isPositive: true, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
           { title: 'Total Sales', value: '2,350', change: '+15.2%', isPositive: true, icon: TrendingUp, color: 'text-primary-600', bg: 'bg-primary-100' },
           { title: 'Active Users', value: '12,234', change: '+5.4%', isPositive: true, icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-100' },
-          { title: 'Total Products', value: '145', change: '-2.1%', isPositive: false, icon: Package, color: 'text-rose-600', bg: 'bg-rose-100' },
+          { title: 'Total Products', value: loading ? '...' : products.length.toString(), change: '+2.1%', isPositive: true, icon: Package, color: 'text-rose-600', bg: 'bg-rose-100' },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -100,23 +119,31 @@ export const AdminDashboard = () => {
         >
           <h3 className="text-lg font-bold text-slate-900 mb-6">Recent Sales</h3>
           <div className="space-y-6">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium">
-                    U{i}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">User {i}</p>
-                    <p className="text-xs text-slate-500">React Mastery Course</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-slate-900">+$99.00</p>
-                  <p className="text-xs text-slate-500">2m ago</p>
-                </div>
+            {loading ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="h-8 w-8 text-primary-500 animate-spin" />
               </div>
-            ))}
+            ) : products.length > 0 ? (
+              products.slice(0, 5).map((product, i) => (
+                <div key={product.id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium overflow-hidden">
+                      <img src={product.thumbnail} alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-900 line-clamp-1">{product.title}</p>
+                      <p className="text-xs text-slate-500">{product.category}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-slate-900">+${product.price.toFixed(2)}</p>
+                    <p className="text-xs text-slate-500">{i + 1}m ago</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-center text-slate-500 py-10">No sales yet.</p>
+            )}
           </div>
         </motion.div>
       </div>
