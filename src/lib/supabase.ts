@@ -2,8 +2,8 @@
 import { createClient } from '@supabase/supabase-js';
 import { type Product } from '../types';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://mock-project.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'mock-anon-key';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://vzmwxvuhvktohrybfted.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bXd4dnVodmt0b2hyeWJmdGVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMTc1OTIsImV4cCI6MjA4ODc5MzU5Mn0.t9P3nYRsF6_o_5zagoA1DfDdI8A2Rg-aalzBFCxZXSo';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

@@ -4,29 +4,55 @@ import { User, Mail, Phone, Lock, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
 
 export const Auth = () => {
   const [isLogin, setIsLogin] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     
-    // For demo purposes, save user info to localStorage
     const formData = new FormData(e.target as HTMLFormElement);
-    const userInfo = {
-      name: formData.get('name') || 'John Doe',
-      email: formData.get('email'),
-      phone: formData.get('phone') || '+1 234 567 890',
-    };
-    
-    localStorage.setItem('user_profile', JSON.stringify(userInfo));
-    
-    // Simulate a small delay for better UX feedback
-    await new Promise(resolve => setTimeout(resolve, 800));
-    navigate('/dashboard');
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const name = formData.get('name') as string;
+    const phone = formData.get('phone') as string;
+
+    try {
+      if (isLogin) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (signInError) throw signInError;
+      } else {
+        const { error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: name,
+              phone: phone,
+            },
+          },
+        });
+        if (signUpError) throw signUpError;
+        
+        // Save to local storage for profile display
+        localStorage.setItem('user_profile', JSON.stringify({ name, email, phone }));
+      }
+      
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'An error occurred during authentication');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,6 +89,16 @@ export const Auth = () => {
                   : 'Join our community of premium digital creators'}
               </p>
             </div>
+
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center"
+              >
+                {error}
+              </motion.div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <AnimatePresence mode="wait">
@@ -113,6 +149,7 @@ export const Auth = () => {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
                   <Input 
+                    name="password"
                     type="password" 
                     placeholder="Password" 
                     className="pl-11 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 transition-all duration-200"
