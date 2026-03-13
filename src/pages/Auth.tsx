@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, Phone, Lock, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 
 export const Auth = () => {
@@ -11,6 +11,8 @@ export const Auth = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,20 +20,26 @@ export const Auth = () => {
     setError(null);
     
     const formData = new FormData(e.target as HTMLFormElement);
-    const email = formData.get('email') as string;
+    const email = (formData.get('email') as string).trim();
     const password = formData.get('password') as string;
     const name = formData.get('name') as string;
     const phone = formData.get('phone') as string;
 
     try {
       if (isLogin) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (signInError) throw signInError;
+        if (signInError) {
+          if (signInError.message === 'Invalid login credentials') {
+            throw new Error('Wrong email or password. Please try again.');
+          }
+          throw signInError;
+        }
+        console.log('Sign in success:', data);
       } else {
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -43,12 +51,21 @@ export const Auth = () => {
         });
         if (signUpError) throw signUpError;
         
+        console.log('Sign up success:', data);
+        
         // Save to local storage for profile display
         localStorage.setItem('user_profile', JSON.stringify({ name, email, phone }));
+
+        if (!data.session) {
+          setError('Account created! Please check your email for a confirmation link before signing in.');
+          setLoading(false);
+          return;
+        }
       }
       
-      navigate('/dashboard');
+      navigate(redirect);
     } catch (err: any) {
+      console.error('Auth error:', err);
       setError(err.message || 'An error occurred during authentication');
     } finally {
       setLoading(false);

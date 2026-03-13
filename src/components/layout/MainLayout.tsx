@@ -5,14 +5,30 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { FloatingNav } from '@/components/ui/FloatingNav';
 import { motion, AnimatePresence } from 'motion/react';
+import { supabase } from '@/lib/supabase';
 
 export const MainLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [user, setUser] = React.useState<any>(null);
   const location = useLocation();
 
   React.useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
+
+  React.useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <div className="flex-1 flex flex-col bg-slate-50 relative">
@@ -46,10 +62,10 @@ export const MainLayout = () => {
                 0
               </span>
             </Link>
-            <Link to="/auth">
+            <Link to={user ? "/dashboard" : "/auth"}>
               <Button variant="outline" size="sm" className="gap-2 rounded-full">
                 <User className="h-4 w-4" />
-                Account
+                {user ? "Dashboard" : "Account"}
               </Button>
             </Link>
           </nav>
@@ -83,7 +99,9 @@ export const MainLayout = () => {
               </div>
               <Link to="/products" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Products</Link>
               <Link to="/affiliate" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Affiliates</Link>
-              <Link to="/auth" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Account</Link>
+              <Link to={user ? "/dashboard" : "/auth"} className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">
+                {user ? "Dashboard" : "Account"}
+              </Link>
               <Link to="/admin" className="p-3 text-primary-600 font-semibold hover:bg-primary-50 rounded-xl transition-colors">Admin Panel</Link>
             </div>
           </motion.div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Download, History, Settings, User, FileText, Shield, Clock, Loader2, CreditCard, ShoppingBag, Phone, Mail as MailIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Download, History, Settings, User, FileText, Shield, Clock, Loader2, CreditCard, ShoppingBag, Phone, Mail as MailIcon, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { productApi, orderApi, supabase } from '@/lib/supabase';
 import { Product, Order } from '@/types';
@@ -11,6 +11,7 @@ export const Dashboard = () => {
   const [activeTab, setActiveTab] = React.useState('purchases');
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState({
     name: 'User',
     email: '',
@@ -23,7 +24,10 @@ export const Dashboard = () => {
         setLoading(true);
         
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          navigate('/auth');
+          return;
+        }
 
         // Load user profile from localStorage or auth metadata
         const storedProfile = localStorage.getItem('user_profile');
@@ -47,7 +51,13 @@ export const Dashboard = () => {
       }
     };
     loadData();
-  }, []);
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem('user_profile');
+    navigate('/auth');
+  };
 
   const successfulOrders = orders.filter(o => o.status === 'success');
 
@@ -77,7 +87,17 @@ export const Dashboard = () => {
                   </p>
                 </div>
               </div>
-              <Button variant="outline" className="w-full text-sm h-9">Edit Profile</Button>
+              <div className="space-y-2 mt-4">
+                <Button variant="outline" className="w-full text-sm h-9">Edit Profile</Button>
+                <Button 
+                  variant="ghost" 
+                  className="w-full text-sm h-9 text-rose-600 hover:text-rose-700 hover:bg-rose-50 gap-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              </div>
             </div>
 
             <nav className="space-y-2">
