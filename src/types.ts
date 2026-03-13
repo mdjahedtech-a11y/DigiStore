@@ -3,13 +3,15 @@ export interface Product {
   title: string;
   description: string;
   price: number;
-  category: string;
+  category: 'PDF' | 'eBooks' | 'Software' | 'Video Courses' | 'Themes' | 'Templates';
   thumbnail: string;
   rating: number;
   reviews: number;
   sales: number;
   featured: boolean;
   trending: boolean;
+  download_url?: string; // Hidden until payment
+  preview_url?: string; // Google Drive preview link or similar
   created_at?: string;
 }
 
@@ -27,6 +29,12 @@ export interface Order {
   user_id: string;
   product_id: string;
   amount: number;
-  status: 'pending' | 'completed' | 'cancelled';
+  status: 'pending' | 'success' | 'cancelled';
+  payment_method: 'bKash' | 'Nagad' | 'Binance';
+  sender_number: string;
+  transaction_id: string;
+  user_name: string;
   created_at: string;
+  updated_at?: string;
+  product?: Product; // Joined data
 }

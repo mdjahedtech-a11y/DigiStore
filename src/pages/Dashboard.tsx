@@ -3,18 +3,18 @@ import { motion } from 'motion/react';
 import { Download, History, Settings, User, FileText, Shield, Clock, Loader2, CreditCard, ShoppingBag, Phone, Mail as MailIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
-import { productApi } from '@/lib/supabase';
-import { Product } from '@/types';
+import { productApi, orderApi, supabase } from '@/lib/supabase';
+import { Product, Order } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = React.useState('purchases');
-  const [purchasedProducts, setPurchasedProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 234 567 890'
+    name: 'User',
+    email: '',
+    phone: ''
   });
 
   useEffect(() => {
@@ -22,15 +22,24 @@ export const Dashboard = () => {
       try {
         setLoading(true);
         
-        // Load user profile from localStorage
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Load user profile from localStorage or auth metadata
         const storedProfile = localStorage.getItem('user_profile');
         if (storedProfile) {
           setUserProfile(JSON.parse(storedProfile));
+        } else {
+          setUserProfile({
+            name: user.user_metadata?.full_name || 'User',
+            email: user.email || '',
+            phone: user.user_metadata?.phone || ''
+          });
         }
 
-        // For demo, we'll just show some products as "purchased"
-        const data = await productApi.getAll();
-        setPurchasedProducts(data.slice(0, 3));
+        // Load real orders from Supabase
+        const userOrders = await orderApi.getByUserId(user.id);
+        setOrders(userOrders);
       } catch (err) {
         console.error('Error loading dashboard data:', err);
       } finally {
@@ -39,6 +48,8 @@ export const Dashboard = () => {
     };
     loadData();
   }, []);
+
+  const successfulOrders = orders.filter(o => o.status === 'success');
 
   return (
     <div className="bg-slate-50 py-12 flex-1">
@@ -129,28 +140,36 @@ export const Dashboard = () => {
                   {activeTab === 'purchases' && (
                     <div>
                       <h2 className="text-2xl font-bold text-slate-900 mb-6">My Purchases</h2>
-                      {purchasedProducts.length > 0 ? (
+                      {successfulOrders.length > 0 ? (
                         <div className="grid grid-cols-1 gap-6">
-                          {purchasedProducts.map((product) => (
-                            <div key={product.id} className="flex flex-col sm:flex-row gap-6 p-6 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                          {successfulOrders.map((order) => (
+                            <div key={order.id} className="flex flex-col sm:flex-row gap-6 p-6 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors">
                               <div className="w-full sm:w-48 aspect-[4/3] rounded-xl overflow-hidden shrink-0">
-                                <img src={product.thumbnail} alt={product.title} className="w-full h-full object-cover" />
+                                <img src={order.product?.thumbnail} alt={order.product?.title} className="w-full h-full object-cover" />
                               </div>
                               <div className="flex-1 flex flex-col">
                                 <div className="flex items-start justify-between mb-2">
-                                  <h3 className="text-lg font-semibold text-slate-900">{product.title}</h3>
+                                  <h3 className="text-lg font-semibold text-slate-900">{order.product?.title}</h3>
                                   <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Active</span>
                                 </div>
-                                <p className="text-sm text-slate-500 mb-4 line-clamp-2">{product.description}</p>
+                                <p className="text-sm text-slate-500 mb-4 line-clamp-2">{order.product?.description}</p>
                                 <div className="mt-auto flex items-center justify-between">
                                   <div className="flex items-center gap-4 text-sm text-slate-500">
-                                    <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> Purchased: Oct 12, 2023</span>
+                                    <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> Purchased: {new Date(order.created_at).toLocaleDateString()}</span>
                                     <span className="flex items-center gap-1"><Shield className="h-4 w-4" /> Secure Link</span>
                                   </div>
-                                  <Button size="sm" variant="gradient" className="gap-2">
-                                    <Download className="h-4 w-4" />
-                                    Download File
-                                  </Button>
+                                  {order.product?.download_url && (
+                                    <a 
+                                      href={order.product.download_url} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                    >
+                                      <Button size="sm" variant="gradient" className="gap-2">
+                                        <Download className="h-4 w-4" />
+                                        Download File
+                                      </Button>
+                                    </a>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -158,7 +177,7 @@ export const Dashboard = () => {
                         </div>
                       ) : (
                         <div className="text-center py-20">
-                          <p className="text-slate-500">You haven't purchased any products yet.</p>
+                          <p className="text-slate-500">You haven't purchased any products yet or your payment is pending.</p>
                           <Link to="/">
                             <Button variant="outline" className="mt-4">Browse Products</Button>
                           </Link>
@@ -171,38 +190,40 @@ export const Dashboard = () => {
                     <div>
                       <h2 className="text-2xl font-bold text-slate-900 mb-6">Order Status</h2>
                       <div className="space-y-4">
-                        {[
-                          { id: 'ORD-7721', date: 'Oct 15, 2023', status: 'Success', amount: '$49.00', items: 1 },
-                          { id: 'ORD-8892', date: 'Oct 18, 2023', status: 'Pending', amount: '$29.00', items: 2 },
-                          { id: 'ORD-9901', date: 'Oct 20, 2023', status: 'Success', amount: '$129.00', items: 3 },
-                        ].map((order) => (
-                          <div key={order.id} className="p-5 rounded-2xl border border-slate-100 bg-slate-50/30">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                              <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400">
-                                  <ShoppingBag className="h-6 w-6" />
+                        {orders.length > 0 ? (
+                          orders.map((order) => (
+                            <div key={order.id} className="p-5 rounded-2xl border border-slate-100 bg-slate-50/30">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div className="flex items-center gap-4">
+                                  <div className="h-12 w-12 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400">
+                                    <ShoppingBag className="h-6 w-6" />
+                                  </div>
+                                  <div>
+                                    <p className="font-bold text-slate-900">{order.product?.title || 'Order #' + order.id.slice(0, 8)}</p>
+                                    <p className="text-sm text-slate-500">{new Date(order.created_at).toLocaleDateString()} • {order.payment_method}</p>
+                                  </div>
                                 </div>
-                                <div>
-                                  <p className="font-bold text-slate-900">{order.id}</p>
-                                  <p className="text-sm text-slate-500">{order.date} • {order.items} items</p>
+                                <div className="flex items-center justify-between sm:justify-end gap-6">
+                                  <div className="text-right">
+                                    <p className="font-bold text-slate-900">${order.amount.toFixed(2)}</p>
+                                    <p className="text-xs text-slate-400">Total Amount</p>
+                                  </div>
+                                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
+                                    order.status === 'success' 
+                                      ? 'bg-emerald-100 text-emerald-700' 
+                                      : order.status === 'cancelled'
+                                      ? 'bg-rose-100 text-rose-700'
+                                      : 'bg-amber-100 text-amber-700'
+                                  }`}>
+                                    {order.status}
+                                  </span>
                                 </div>
-                              </div>
-                              <div className="flex items-center justify-between sm:justify-end gap-6">
-                                <div className="text-right">
-                                  <p className="font-bold text-slate-900">{order.amount}</p>
-                                  <p className="text-xs text-slate-400">Total Amount</p>
-                                </div>
-                                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                                  order.status === 'Success' 
-                                    ? 'bg-emerald-100 text-emerald-700' 
-                                    : 'bg-amber-100 text-amber-700'
-                                }`}>
-                                  {order.status}
-                                </span>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))
+                        ) : (
+                          <p className="text-center py-10 text-slate-500">No orders found.</p>
+                        )}
                       </div>
                     </div>
                   )}
@@ -222,21 +243,18 @@ export const Dashboard = () => {
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-50">
-                            {[
-                              { id: 'TXN-100293', date: 'Oct 15, 2023', method: 'Visa **** 4242', amount: '$49.00', status: 'Completed' },
-                              { id: 'TXN-100294', date: 'Oct 18, 2023', method: 'PayPal', amount: '$29.00', status: 'Processing' },
-                              { id: 'TXN-100295', date: 'Oct 20, 2023', method: 'Mastercard **** 8812', amount: '$129.00', status: 'Completed' },
-                            ].map((txn) => (
-                              <tr key={txn.id} className="hover:bg-slate-50/50 transition-colors">
-                                <td className="py-4 px-4 text-sm font-medium text-slate-900">{txn.id}</td>
-                                <td className="py-4 px-4 text-sm text-slate-500">{txn.date}</td>
-                                <td className="py-4 px-4 text-sm text-slate-500">{txn.method}</td>
-                                <td className="py-4 px-4 text-sm font-bold text-slate-900">{txn.amount}</td>
+                            {orders.map((order) => (
+                              <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
+                                <td className="py-4 px-4 text-sm font-medium text-slate-900">{order.transaction_id}</td>
+                                <td className="py-4 px-4 text-sm text-slate-500">{new Date(order.created_at).toLocaleDateString()}</td>
+                                <td className="py-4 px-4 text-sm text-slate-500">{order.payment_method}</td>
+                                <td className="py-4 px-4 text-sm font-bold text-slate-900">${order.amount.toFixed(2)}</td>
                                 <td className="py-4 px-4">
-                                  <span className={`text-xs font-bold ${
-                                    txn.status === 'Completed' ? 'text-emerald-600' : 'text-amber-600'
+                                  <span className={`text-xs font-bold uppercase ${
+                                    order.status === 'success' ? 'text-emerald-600' : 
+                                    order.status === 'cancelled' ? 'text-rose-600' : 'text-amber-600'
                                   }`}>
-                                    {txn.status}
+                                    {order.status}
                                   </span>
                                 </td>
                               </tr>

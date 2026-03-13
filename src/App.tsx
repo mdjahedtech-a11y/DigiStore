@@ -11,6 +11,8 @@ import { ProductDetails } from './pages/ProductDetails';
 import { Dashboard } from './pages/Dashboard';
 import { AffiliateDashboard } from './pages/AffiliateDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminProducts } from './pages/AdminProducts';
+import { AdminOrders } from './pages/AdminOrders';
 import { Auth } from './pages/Auth';
 
 export default function App() {
@@ -32,9 +34,9 @@ export default function App() {
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
           {/* Placeholders for other admin pages */}
-          <Route path="products" element={<div className="p-8 text-slate-500">Products Management (Coming Soon)</div>} />
-          <Route path="orders" element={<div className="p-8 text-slate-500">Orders Management (Coming Soon)</div>} />
           <Route path="users" element={<div className="p-8 text-slate-500">Users Management (Coming Soon)</div>} />
           <Route path="reviews" element={<div className="p-8 text-slate-500">Reviews Management (Coming Soon)</div>} />
           <Route path="coupons" element={<div className="p-8 text-slate-500">Coupons Management (Coming Soon)</div>} />
