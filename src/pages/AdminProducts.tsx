@@ -12,6 +12,7 @@ export const AdminProducts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<Partial<Product>>({
     title: '',
@@ -64,11 +65,13 @@ export const AdminProducts = () => {
       });
     }
     setIsModalOpen(true);
+    setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setError(null);
     try {
       if (editingProduct) {
         await productApi.update(editingProduct.id, formData);
@@ -77,8 +80,9 @@ export const AdminProducts = () => {
       }
       setIsModalOpen(false);
       loadProducts();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error saving product:', err);
+      setError(err.message || 'Failed to save product. Please check your database permissions.');
     } finally {
       setSubmitting(false);
     }
@@ -251,6 +255,12 @@ export const AdminProducts = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[70vh]">
+                {error && (
+                  <div className="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-sm flex items-center gap-2">
+                    <X className="h-4 w-4 shrink-0" />
+                    <p>{error}</p>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4 md:col-span-2">
                     <label className="block text-sm font-bold text-slate-700">Product Title</label>
@@ -292,8 +302,8 @@ export const AdminProducts = () => {
                       required
                       type="number"
                       step="0.01"
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                      value={formData.price || ''}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value === '' ? 0 : parseFloat(e.target.value) })}
                     />
                   </div>
 
@@ -309,6 +319,23 @@ export const AdminProducts = () => {
                         placeholder="https://images.unsplash.com/..." 
                       />
                     </div>
+                    {formData.thumbnail && (
+                      <div className="mt-2 relative group">
+                        <div className="h-32 w-full rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+                          <img 
+                            src={formData.thumbnail} 
+                            alt="Preview" 
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://picsum.photos/seed/error/800/600';
+                            }}
+                          />
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
+                          <span className="text-white text-xs font-medium">Image Preview</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-4">

@@ -41,24 +41,42 @@ export const productApi = {
   },
 
   async create(product: Omit<Product, 'id' | 'created_at'>) {
-    const { data, error } = await supabase
-      .from('products')
-      .insert([product])
-      .select()
-      .single();
-    if (error) throw error;
-    return data as Product;
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .insert([product])
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Supabase Product Create Error:', error);
+        throw error;
+      }
+      return data as Product;
+    } catch (err) {
+      console.error('Product API Create Exception:', err);
+      throw err;
+    }
   },
 
   async update(id: string, product: Partial<Product>) {
-    const { data, error } = await supabase
-      .from('products')
-      .update(product)
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) throw error;
-    return data as Product;
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .update(product)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Supabase Product Update Error:', error);
+        throw error;
+      }
+      return data as Product;
+    } catch (err) {
+      console.error('Product API Update Exception:', err);
+      throw err;
+    }
   },
 
   async delete(id: string) {
