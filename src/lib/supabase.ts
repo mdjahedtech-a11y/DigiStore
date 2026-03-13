@@ -72,13 +72,26 @@ export const productApi = {
 
 export const orderApi = {
   async create(order: Omit<Order, 'id' | 'created_at' | 'status'>) {
-    const { data, error } = await supabase
-      .from('orders')
-      .insert([{ ...order, status: 'pending' }])
-      .select()
-      .single();
-    if (error) throw error;
-    return data as Order;
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .insert([{ ...order, status: 'pending' }])
+        .select();
+      
+      if (error) {
+        console.error('Supabase Order Create Error:', error);
+        throw error;
+      }
+      
+      if (!data || data.length === 0) {
+        throw new Error('No data returned from order creation');
+      }
+      
+      return data[0] as Order;
+    } catch (err) {
+      console.error('Order API Create Exception:', err);
+      throw err;
+    }
   },
 
   async getAll() {

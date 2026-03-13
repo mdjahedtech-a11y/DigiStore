@@ -3,10 +3,11 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { productApi, orderApi, supabase } from '@/lib/supabase';
 import { Product, Order } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { Star, CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor, Loader2, X, CreditCard, Send, ExternalLink } from 'lucide-react';
+import { Star, CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor, Loader2, X, CreditCard, Send, ExternalLink, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Input } from '@/components/ui/Input';
+import { cn } from '@/lib/utils';
 
 export const ProductDetails = () => {
   const { id } = useParams();
@@ -54,12 +55,24 @@ export const ProductDetails = () => {
     setIsPaymentModalOpen(true);
   };
 
+  const [isSuccess, setIsSuccess] = React.useState(false);
+
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!product || !user) return;
 
     setSubmitting(true);
     try {
+      console.log('Submitting order with data:', {
+        user_id: user.id,
+        product_id: product.id,
+        amount: product.price,
+        payment_method: paymentMethod,
+        sender_number: paymentData.senderNumber,
+        transaction_id: paymentData.transactionId,
+        user_name: paymentData.name,
+      });
+
       await orderApi.create({
         user_id: user.id,
         product_id: product.id,
@@ -70,12 +83,16 @@ export const ProductDetails = () => {
         user_name: paymentData.name,
       });
       
-      setIsPaymentModalOpen(false);
-      alert('Payment submitted successfully! Your order is now pending approval.');
-      navigate('/dashboard');
-    } catch (err) {
+      setIsSuccess(true);
+      setTimeout(() => {
+        setIsPaymentModalOpen(false);
+        setIsSuccess(false);
+        navigate('/dashboard');
+      }, 3000);
+    } catch (err: any) {
       console.error('Error submitting payment:', err);
-      alert('Failed to submit payment. Please try again.');
+      const errorMsg = err.message || 'Unknown error';
+      alert(`Failed to submit payment: ${errorMsg}. Please check your connection or try again.`);
     } finally {
       setSubmitting(false);
     }
@@ -141,6 +158,12 @@ export const ProductDetails = () => {
     bKash: '01700000000',
     Nagad: '01800000000',
     Binance: 'binance_id_here'
+  };
+
+  const paymentColors = {
+    bKash: 'from-[#D12053] to-[#E2136E]',
+    Nagad: 'from-[#F7941D] to-[#ED1C24]',
+    Binance: 'from-[#F3BA2F] to-[#F0B90B]'
   };
 
   return (
@@ -299,94 +322,184 @@ export const ProductDetails = () => {
       {/* Payment Modal */}
       <AnimatePresence>
         {isPaymentModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsPaymentModalOpen(false)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+              className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-2xl overflow-hidden"
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden"
             >
-              <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-slate-900">Complete Payment</h2>
-                <button onClick={() => setIsPaymentModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                  <X className="h-5 w-5 text-slate-500" />
-                </button>
-              </div>
+              <AnimatePresence mode="wait">
+                {isSuccess ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="p-12 text-center space-y-6"
+                  >
+                    <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Check className="h-12 w-12 stroke-[3]" />
+                    </div>
+                    <h2 className="text-3xl font-black text-slate-900 tracking-tight">Payment Received!</h2>
+                    <p className="text-slate-500 font-medium text-lg max-w-xs mx-auto">
+                      Your transaction is being verified. You'll be redirected to your dashboard in a moment.
+                    </p>
+                    <div className="pt-4">
+                      <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: "100%" }}
+                          transition={{ duration: 2.5, ease: "linear" }}
+                          className="h-full bg-emerald-500"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div key="form" exit={{ opacity: 0, y: -20 }}>
+                    {/* Vibrant Header */}
+                    <div className={cn(
+                      "p-8 text-white relative overflow-hidden bg-gradient-to-br transition-all duration-500",
+                      paymentColors[paymentMethod]
+                    )}>
+                      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+                      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-48 h-48 bg-black/10 rounded-full blur-2xl" />
+                      
+                      <div className="relative z-10 flex items-center justify-between">
+                        <div>
+                          <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-1">Secure Checkout</h2>
+                          <p className="text-white/80 font-medium">Complete your order for {product?.title}</p>
+                        </div>
+                        <button 
+                          onClick={() => setIsPaymentModalOpen(false)} 
+                          className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+                        >
+                          <X className="h-6 w-6" />
+                        </button>
+                      </div>
+                    </div>
 
-              <form onSubmit={handlePaymentSubmit} className="p-6 space-y-6">
-                {/* Payment Methods */}
-                <div className="grid grid-cols-3 gap-3">
-                  {(['bKash', 'Nagad', 'Binance'] as const).map((method) => (
-                    <button
-                      key={method}
-                      type="button"
-                      onClick={() => setPaymentMethod(method)}
-                      className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${
-                        paymentMethod === method 
-                          ? 'border-primary-500 bg-primary-50 text-primary-700' 
-                          : 'border-slate-100 hover:border-slate-200 text-slate-500'
-                      }`}
-                    >
-                      <CreditCard className="h-5 w-5" />
-                      <span className="text-xs font-bold">{method}</span>
-                    </button>
-                  ))}
-                </div>
+                    <form onSubmit={handlePaymentSubmit} className="p-8 space-y-8">
+                      {/* Payment Methods - Redesigned */}
+                      <div className="space-y-4">
+                        <label className="text-sm font-black text-slate-400 uppercase tracking-widest">Select Payment Method</label>
+                        <div className="grid grid-cols-3 gap-4">
+                          {(['bKash', 'Nagad', 'Binance'] as const).map((method) => (
+                            <button
+                              key={method}
+                              type="button"
+                              onClick={() => setPaymentMethod(method)}
+                              className={cn(
+                                "relative py-4 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center gap-2 group",
+                                paymentMethod === method 
+                                  ? "border-primary-500 bg-primary-50 text-primary-600 shadow-lg shadow-primary-500/10" 
+                                  : "border-slate-100 hover:border-slate-200 text-slate-400 hover:text-slate-600"
+                              )}
+                            >
+                              <div className={cn(
+                                "w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110",
+                                paymentMethod === method ? "bg-primary-500 text-white" : "bg-slate-100"
+                              )}>
+                                {method === 'bKash' && <span className="font-bold text-xs">bK</span>}
+                                {method === 'Nagad' && <span className="font-bold text-xs">Ng</span>}
+                                {method === 'Binance' && <span className="font-bold text-xs">Bi</span>}
+                              </div>
+                              <span className="text-xs font-black uppercase tracking-wider">{method}</span>
+                              {paymentMethod === method && (
+                                <motion.div layoutId="active-method" className="absolute -top-2 -right-2 bg-primary-500 text-white rounded-full p-1 shadow-lg">
+                                  <Check className="h-3 w-3 stroke-[4]" />
+                                </motion.div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
 
-                {/* Payment Instructions */}
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center">
-                  <p className="text-sm text-slate-500 mb-1">Send <span className="font-bold text-slate-900">${product?.price}</span> to this {paymentMethod} number:</p>
-                  <p className="text-2xl font-bold text-primary-600 tracking-wider">{paymentNumbers[paymentMethod]}</p>
-                  <p className="text-[10px] text-slate-400 mt-2 uppercase tracking-widest">Personal Account</p>
-                </div>
+                      {/* Instructions - Dark & Stylish */}
+                      <div className="p-6 bg-slate-900 rounded-3xl text-white space-y-4 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                          <CreditCard className="h-12 w-12" />
+                        </div>
+                        <div className="relative z-10">
+                          <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Payment Instructions</p>
+                          <p className="text-sm font-medium leading-relaxed">
+                            Send <span className="text-primary-400 font-black text-lg">৳{product?.price}</span> to the following {paymentMethod} number:
+                          </p>
+                          <div className="mt-4 flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/10">
+                            <span className="text-xl font-mono font-bold tracking-wider">{paymentNumbers[paymentMethod]}</span>
+                            <Button size="sm" variant="ghost" className="text-primary-400 hover:text-primary-300 hover:bg-white/10">Copy</Button>
+                          </div>
+                        </div>
+                      </div>
 
-                {/* Form Fields */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700">Your Full Name</label>
-                    <Input 
-                      required
-                      value={paymentData.name}
-                      onChange={(e) => setPaymentData({ ...paymentData, name: e.target.value })}
-                      placeholder="Enter your name" 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700">Sender {paymentMethod} Number</label>
-                    <Input 
-                      required
-                      value={paymentData.senderNumber}
-                      onChange={(e) => setPaymentData({ ...paymentData, senderNumber: e.target.value })}
-                      placeholder="01XXXXXXXXX" 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700">Transaction ID</label>
-                    <Input 
-                      required
-                      value={paymentData.transactionId}
-                      onChange={(e) => setPaymentData({ ...paymentData, transactionId: e.target.value })}
-                      placeholder="Enter Transaction ID" 
-                    />
-                  </div>
-                </div>
+                      {/* Form Inputs - Modern & Clean */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="space-y-2 sm:col-span-2">
+                          <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Your Full Name</label>
+                          <Input
+                            required
+                            placeholder="Full Name"
+                            value={paymentData.name}
+                            onChange={(e) => setPaymentData({ ...paymentData, name: e.target.value })}
+                            className="h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-2xl text-slate-900 font-medium"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Sender Number</label>
+                          <Input
+                            required
+                            placeholder="017XXXXXXXX"
+                            value={paymentData.senderNumber}
+                            onChange={(e) => setPaymentData({ ...paymentData, senderNumber: e.target.value })}
+                            className="h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-2xl text-slate-900 font-medium"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Transaction ID</label>
+                          <Input
+                            required
+                            placeholder="Enter Transaction ID"
+                            value={paymentData.transactionId}
+                            onChange={(e) => setPaymentData({ ...paymentData, transactionId: e.target.value })}
+                            className="h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-2xl text-slate-900 font-medium"
+                          />
+                        </div>
+                      </div>
 
-                <Button 
-                  type="submit" 
-                  variant="gradient" 
-                  className="w-full h-14 rounded-2xl text-lg gap-2"
-                  disabled={submitting}
-                >
-                  {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : <><Send className="h-5 w-5" /> Payment Complete</>}
-                </Button>
-              </form>
+                      <Button 
+                        type="submit" 
+                        disabled={submitting}
+                        className={cn(
+                          "w-full h-16 rounded-2xl text-lg font-black tracking-tight transition-all duration-300 shadow-xl",
+                          paymentColors[paymentMethod],
+                          "hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:scale-100"
+                        )}
+                      >
+                        {submitting ? (
+                          <div className="flex items-center gap-3">
+                            <Loader2 className="h-6 w-6 animate-spin" />
+                            Processing...
+                          </div>
+                        ) : (
+                          "Confirm Payment"
+                        )}
+                      </Button>
+                      
+                      <p className="text-center text-xs text-slate-400 font-medium">
+                        By clicking confirm, you agree to our <Link to="#" className="underline">Terms of Service</Link>
+                      </p>
+                    </form>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           </div>
         )}
