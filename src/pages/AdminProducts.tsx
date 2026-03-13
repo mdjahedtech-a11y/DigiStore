@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Search, Filter, Edit2, Trash2, ExternalLink, Image as ImageIcon, Link as LinkIcon, FileText, Book, Monitor, Video, X, Save, Loader2 } from 'lucide-react';
+import { Plus, Search, Filter, Edit2, Trash2, ExternalLink, Image as ImageIcon, Link as LinkIcon, FileText, Book, Monitor, Video, X, Save, Loader2, Package } from 'lucide-react';
 import { productApi, CATEGORIES } from '@/lib/supabase';
 import { Product } from '@/types';
 import { Button } from '@/components/ui/Button';
