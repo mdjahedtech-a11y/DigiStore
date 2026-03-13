@@ -22,7 +22,7 @@ export const FloatingNav = () => {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-        className="relative flex items-center justify-between p-2 bg-slate-900/95 backdrop-blur-2xl rounded-full border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.8)] overflow-hidden group"
+        className="relative flex items-center justify-between p-2 bg-slate-900/95 backdrop-blur-lg rounded-full border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.8)] overflow-hidden group"
       >
         {/* Animated Gradient Border Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 via-secondary-500/20 to-primary-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

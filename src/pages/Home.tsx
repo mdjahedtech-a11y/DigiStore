@@ -31,20 +31,24 @@ export const Home = () => {
     loadProducts();
   }, []);
   
-  const filteredProducts = activeCategory === 'All' 
-    ? products 
-    : products.filter(p => p.category === activeCategory);
+  const filteredProducts = React.useMemo(() => {
+    return activeCategory === 'All' 
+      ? products 
+      : products.filter(p => p.category === activeCategory);
+  }, [products, activeCategory]);
 
-  const featuredProducts = products.filter(p => p.featured);
+  const featuredProducts = React.useMemo(() => {
+    return products.filter(p => p.featured);
+  }, [products]);
 
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-slate-900 pt-24 pb-32 lg:pt-32 lg:pb-40">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-b from-primary-500/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen" />
-          <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-t from-secondary-500/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen" />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+          <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-b from-primary-500/10 to-transparent rounded-full blur-[80px] opacity-30" />
+          <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-t from-secondary-500/10 to-transparent rounded-full blur-[80px] opacity-30" />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay" />
         </div>
         
         <div className="container relative z-10 mx-auto px-4 text-center">

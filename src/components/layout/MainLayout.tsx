@@ -16,7 +16,7 @@ export const MainLayout = () => {
 
   return (
     <div className="flex-1 flex flex-col bg-slate-50 relative">
-      <header className="sticky top-0 z-50 w-full border-b border-slate-200/50 bg-white/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 w-full border-b border-slate-200/50 bg-white/90 backdrop-blur-md">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-gradient-primary flex items-center justify-center">
@@ -63,27 +63,28 @@ export const MainLayout = () => {
         </div>
       </header>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-200 shadow-lg z-40"
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-200 shadow-xl z-40"
           >
-            <div className="p-4 flex flex-col gap-4">
-              <div className="relative">
+            <div className="p-4 flex flex-col gap-2">
+              <div className="relative mb-2">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input 
                   type="search" 
                   placeholder="Search products..." 
-                  className="pl-10 bg-slate-100/50 rounded-full"
+                  className="pl-10 bg-slate-100/50 rounded-xl border-transparent focus:bg-white"
                 />
               </div>
-              <Link to="/products" className="p-2 text-slate-700 font-medium hover:bg-slate-50 rounded-lg">Products</Link>
-              <Link to="/affiliate" className="p-2 text-slate-700 font-medium hover:bg-slate-50 rounded-lg">Affiliates</Link>
-              <Link to="/auth" className="p-2 text-slate-700 font-medium hover:bg-slate-50 rounded-lg">Account</Link>
-              <Link to="/admin" className="p-2 text-primary-600 font-medium hover:bg-primary-50 rounded-lg">Admin Panel</Link>
+              <Link to="/products" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Products</Link>
+              <Link to="/affiliate" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Affiliates</Link>
+              <Link to="/auth" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Account</Link>
+              <Link to="/admin" className="p-3 text-primary-600 font-semibold hover:bg-primary-50 rounded-xl transition-colors">Admin Panel</Link>
             </div>
           </motion.div>
         )}
