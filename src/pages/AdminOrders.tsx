@@ -37,11 +37,13 @@ export const AdminOrders = () => {
   const loadOrders = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await orderApi.getAll();
       setOrders(data);
       setFilteredOrders(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error loading orders:', err);
+      setError(err.message || 'Failed to load orders.');
     } finally {
       setLoading(false);
     }

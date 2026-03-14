@@ -59,10 +59,11 @@ export const Cart = () => {
       setCheckoutStatus('success');
       clearCart();
       setTimeout(() => navigate('/dashboard'), 3000);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Checkout error:', error);
       setCheckoutStatus('error');
-      alert('Failed to process order. Please try again.');
+      const errorMessage = error?.message || 'Unknown error';
+      alert(`Failed to process order: ${errorMessage}. Please try again.`);
     } finally {
       setSubmitting(false);
     }
