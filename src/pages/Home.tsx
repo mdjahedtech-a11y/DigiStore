@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, Sparkles, Zap, ShieldCheck, Loader2 } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, ShieldCheck, Loader2, FileText, Book, Monitor, Palette, Video as VideoIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { ProductCard } from '@/components/ui/ProductCard';
@@ -44,24 +44,71 @@ export const Home = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-0 pb-0 lg:pt-0 lg:pb-0 flex items-center bg-slate-950">
-        {/* Video Background Overlay */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
-            className="absolute inset-0 w-full h-full object-cover"
-          >
-            <source src="https://cdn.coverr.co/videos/preview/720p/coverr-digital-world-map-1571.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-slate-950/0" />
-        </div>
+      <section className="relative overflow-hidden min-h-[600px] lg:min-h-[700px] flex items-center bg-slate-950 py-20">
+        {/* Animated Background Overlay */}
+        <div className="absolute inset-0 z-0 overflow-hidden bg-slate-950">
+          {/* Colorful glowing orbs */}
+          <div className="absolute top-[20%] left-[20%] w-[40vw] h-[40vw] bg-primary-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" />
+          <div className="absolute bottom-[20%] right-[20%] w-[40vw] h-[40vw] bg-secondary-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-[40%] left-[60%] w-[30vw] h-[30vw] bg-emerald-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDelay: '4s' }} />
 
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-b from-primary-500/10 to-transparent rounded-full blur-[120px] opacity-20" />
+          {/* Floating Circular Icons */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40 sm:opacity-60">
+            {/* PDF Icon */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[300px] h-[300px] sm:w-[500px] sm:h-[500px]"
+            >
+              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-red-500 to-rose-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(225,29,72,0.5)]">
+                <FileText className="h-8 w-8 text-white" />
+              </div>
+            </motion.div>
+
+            {/* Book Icon */}
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[400px] h-[400px] sm:w-[650px] sm:h-[650px]"
+            >
+              <div className="absolute top-1/4 -right-4 w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(79,70,229,0.5)]">
+                <Book className="h-7 w-7 text-white" />
+              </div>
+            </motion.div>
+
+            {/* Software Icon */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[500px] h-[500px] sm:w-[800px] sm:h-[800px]"
+            >
+              <div className="absolute bottom-0 left-1/4 w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(13,148,136,0.5)]">
+                <Monitor className="h-10 w-10 text-white" />
+              </div>
+            </motion.div>
+
+            {/* Theme Icon */}
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[350px] h-[350px] sm:w-[550px] sm:h-[550px]"
+            >
+              <div className="absolute bottom-1/4 -left-6 w-16 h-16 bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(147,51,234,0.5)]">
+                <Palette className="h-8 w-8 text-white" />
+              </div>
+            </motion.div>
+
+            {/* Video Icon */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[450px] h-[450px] sm:w-[700px] sm:h-[700px]"
+            >
+              <div className="absolute -bottom-4 right-1/3 w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(234,88,12,0.5)]">
+                <VideoIcon className="h-8 w-8 text-white" />
+              </div>
+            </motion.div>
+          </div>
         </div>
         
         <div className="container relative z-10 mx-auto px-4 text-center">
