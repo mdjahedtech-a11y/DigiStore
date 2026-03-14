@@ -30,7 +30,7 @@ export interface Order {
   user_id: string;
   product_id: string;
   amount: number;
-  status: 'pending' | 'success' | 'cancelled';
+  status: 'pending' | 'success' | 'cancelled' | 'deleted';
   payment_method: 'bKash' | 'Nagad' | 'Binance';
   sender_number: string;
   transaction_id: string;

@@ -131,7 +131,7 @@ export const orderApi = {
     return data as Order[];
   },
 
-  async updateStatus(id: string, status: 'success' | 'cancelled') {
+  async updateStatus(id: string, status: 'success' | 'cancelled' | 'deleted') {
     const { data, error } = await supabase
       .from('orders')
       .update({ status, updated_at: new Date().toISOString() })

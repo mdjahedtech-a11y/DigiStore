@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, CheckCircle2, XCircle, Clock, Search, Filter, ExternalLink, User, Phone, CreditCard, Loader2, X, Calendar, Hash, DollarSign, Package, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, CheckCircle2, XCircle, Clock, Search, Filter, ExternalLink, User, Phone, CreditCard, Loader2, X, Calendar, Hash, DollarSign, Package, ShieldCheck, Trash2 } from 'lucide-react';
 import { orderApi } from '@/lib/supabase';
 import { Order } from '@/types';
 import { Button } from '@/components/ui/Button';
@@ -12,7 +12,7 @@ export const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'success' | 'cancelled'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'success' | 'cancelled' | 'deleted'>('pending');
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
@@ -49,7 +49,7 @@ export const AdminOrders = () => {
     }
   };
 
-  const handleUpdateStatus = async (id: string, status: 'success' | 'cancelled') => {
+  const handleUpdateStatus = async (id: string, status: 'success' | 'cancelled' | 'deleted') => {
     try {
       setUpdating(id);
       setError(null);
@@ -72,6 +72,8 @@ export const AdminOrders = () => {
         return <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider">Success</span>;
       case 'cancelled':
         return <span className="px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-[10px] font-black uppercase tracking-wider">Cancelled</span>;
+      case 'deleted':
+        return <span className="px-3 py-1 rounded-full bg-slate-200 text-slate-700 text-[10px] font-black uppercase tracking-wider">Deleted</span>;
       default:
         return <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black uppercase tracking-wider">Pending</span>;
     }
@@ -97,6 +99,7 @@ export const AdminOrders = () => {
             { id: 'pending', label: 'Pending Orders', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
             { id: 'success', label: 'Success Orders', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
             { id: 'cancelled', label: 'Cancel Orders', icon: XCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
+            { id: 'deleted', label: 'Deleted Orders', icon: Trash2, color: 'text-slate-600', bg: 'bg-slate-100' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -227,28 +230,36 @@ export const AdminOrders = () => {
                       {getStatusBadge(order.status)}
                     </td>
                     <td className="py-4 px-6 text-right" onClick={(e) => e.stopPropagation()}>
-                      {order.status === 'pending' ? (
-                        <div className="flex justify-end gap-2">
-                          <button 
-                            disabled={updating === order.id}
-                            onClick={() => handleUpdateStatus(order.id, 'success')}
-                            className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
-                            title="Approve Order"
-                          >
-                            {updating === order.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                          </button>
-                          <button 
-                            disabled={updating === order.id}
-                            onClick={() => handleUpdateStatus(order.id, 'cancelled')}
-                            className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
-                            title="Cancel Order"
-                          >
-                            {updating === order.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-xs text-slate-400 italic">Processed</span>
-                      )}
+                      <div className="flex justify-end gap-2">
+                        {order.status !== 'deleted' && (
+                          <>
+                            <button 
+                              disabled={updating === order.id}
+                              onClick={() => handleUpdateStatus(order.id, 'success')}
+                              className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                              title="Approve Order"
+                            >
+                              {updating === order.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                            </button>
+                            <button 
+                              disabled={updating === order.id}
+                              onClick={() => handleUpdateStatus(order.id, 'cancelled')}
+                              className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                              title="Cancel Order"
+                            >
+                              {updating === order.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+                            </button>
+                          </>
+                        )}
+                        <button 
+                          disabled={updating === order.id}
+                          onClick={() => handleUpdateStatus(order.id, 'deleted')}
+                          className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
+                          title="Delete Order"
+                        >
+                          {updating === order.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -441,12 +452,12 @@ export const AdminOrders = () => {
                 </motion.div>
 
                 {/* Action Buttons */}
-                {selectedOrder.status === 'pending' ? (
+                {selectedOrder.status !== 'deleted' ? (
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="grid grid-cols-2 gap-3 sm:gap-4 pt-2 sm:pt-4"
+                    className="grid grid-cols-3 gap-3 sm:gap-4 pt-2 sm:pt-4"
                   >
                     <Button 
                       onClick={() => handleUpdateStatus(selectedOrder.id, 'cancelled')}
@@ -454,6 +465,13 @@ export const AdminOrders = () => {
                       className="h-12 sm:h-16 rounded-xl sm:rounded-[1.25rem] bg-rose-50 text-rose-600 hover:bg-rose-100 border-none font-black tracking-tight text-base sm:text-lg shadow-lg shadow-rose-500/5"
                     >
                       {updating === selectedOrder.id ? <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin" /> : "Cancel"}
+                    </Button>
+                    <Button 
+                      onClick={() => handleUpdateStatus(selectedOrder.id, 'deleted')}
+                      disabled={updating === selectedOrder.id}
+                      className="h-12 sm:h-16 rounded-xl sm:rounded-[1.25rem] bg-slate-100 text-slate-600 hover:bg-slate-200 border-none font-black tracking-tight text-base sm:text-lg shadow-lg shadow-slate-500/5"
+                    >
+                      {updating === selectedOrder.id ? <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin" /> : "Delete"}
                     </Button>
                     <Button 
                       onClick={() => handleUpdateStatus(selectedOrder.id, 'success')}
