@@ -40,7 +40,7 @@ export const MainLayout = () => {
             <div className="h-8 w-8 rounded-xl bg-gradient-primary flex items-center justify-center">
               <span className="text-white font-bold text-xl">D</span>
             </div>
-            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 hidden sm:block">
+            <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700">
               DigitalEmpire
             </span>
           </Link>
