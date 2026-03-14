@@ -21,6 +21,33 @@ export const AdminOrders = () => {
   }, []);
 
   useEffect(() => {
+    if (activeTab === 'deleted') {
+      cleanupDeletedOrders();
+    }
+  }, [activeTab, orders]);
+
+  const cleanupDeletedOrders = async () => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const toDelete = orders.filter(order =>
+      order.status === 'deleted' &&
+      new Date(order.updated_at || order.created_at) < sevenDaysAgo
+    );
+
+    if (toDelete.length > 0) {
+      try {
+        for (const order of toDelete) {
+          await orderApi.permanentDelete(order.id);
+        }
+        loadOrders();
+      } catch (err) {
+        console.error('Failed to permanently delete orders:', err);
+      }
+    }
+  };
+
+  useEffect(() => {
     const filtered = orders.filter(order => {
       const matchesSearch = 
         order.transaction_id.toLowerCase().includes(searchTerm.toLowerCase()) ||

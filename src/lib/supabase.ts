@@ -140,6 +140,14 @@ export const orderApi = {
       .single();
     if (error) throw error;
     return data as Order;
+  },
+
+  async permanentDelete(id: string) {
+    const { error } = await supabase
+      .from('orders')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
   }
 };
 
