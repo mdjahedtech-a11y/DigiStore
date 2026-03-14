@@ -44,7 +44,7 @@ export const Home = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-slate-950 pt-24 pb-32 lg:pt-32 lg:pb-40 min-h-[80vh] flex items-center">
+      <section className="relative overflow-hidden pt-0 pb-0 lg:pt-0 lg:pb-0 flex items-center bg-slate-950">
         {/* Video Background Overlay */}
         <div className="absolute inset-0 z-0">
           <video
@@ -52,17 +52,16 @@ export const Home = () => {
             loop
             muted
             playsInline
-            className="w-full h-full object-cover opacity-50"
+            poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+            className="absolute inset-0 w-full h-full object-cover"
           >
-            <source src="https://player.vimeo.com/external/370331493.sd.mp4?s=7b2331909456c39ad05540619c330617453fd590&profile_id=139&oauth2_token_id=57447761" type="video/mp4" />
+            <source src="https://cdn.coverr.co/videos/preview/720p/coverr-digital-world-map-1571.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/40 to-slate-950" />
-          <div className="absolute inset-0 bg-slate-950/20" />
+          <div className="absolute inset-0 bg-slate-950/0" />
         </div>
 
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-b from-primary-500/20 to-transparent rounded-full blur-[120px] opacity-30" />
-          <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-t from-secondary-500/20 to-transparent rounded-full blur-[120px] opacity-30" />
+          <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-b from-primary-500/10 to-transparent rounded-full blur-[120px] opacity-20" />
         </div>
         
         <div className="container relative z-10 mx-auto px-4 text-center">
