@@ -270,7 +270,7 @@ export const AdminOrders = () => {
       {/* Stylish Order Details Popup */}
       <AnimatePresence>
         {selectedOrder && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="fixed inset-0 z-[200]">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -278,15 +278,17 @@ export const AdminOrders = () => {
               onClick={() => setSelectedOrder(null)}
               className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
             />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              className="relative w-full max-w-lg bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden border border-white/20"
-            >
-              {/* Vibrant Header with Animated Gradient */}
-              <div className={cn(
-                "p-8 text-white relative overflow-hidden transition-all duration-700",
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="min-h-full flex items-center justify-center p-4 sm:p-6">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                  className="relative w-full max-w-lg bg-white/90 backdrop-blur-xl rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden border border-white/20"
+                >
+                  {/* Vibrant Header with Animated Gradient */}
+                  <div className={cn(
+                    "p-6 sm:p-8 text-white relative overflow-hidden transition-all duration-700",
                 selectedOrder.payment_method === 'bKash' ? "bg-gradient-to-br from-pink-500 via-rose-500 to-rose-600" :
                 selectedOrder.payment_method === 'Nagad' ? "bg-gradient-to-br from-orange-500 via-red-500 to-red-600" :
                 "bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500"
@@ -330,16 +332,16 @@ export const AdminOrders = () => {
                     whileHover={{ rotate: 90, scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setSelectedOrder(null)} 
-                    className="p-3 bg-white/20 hover:bg-white/30 rounded-full transition-colors backdrop-blur-md"
+                    className="p-2 sm:p-3 bg-white/20 hover:bg-white/30 rounded-full transition-colors backdrop-blur-md"
                   >
-                    <X className="h-6 w-6" />
+                    <X className="h-5 w-5 sm:h-6 sm:w-6" />
                   </motion.button>
                 </div>
               </div>
 
-              <div className="p-8 space-y-8">
+              <div className="p-5 sm:p-8 space-y-6 sm:space-y-8">
                 {/* Status Banner */}
-                <div className="flex justify-center -mt-12 relative z-20">
+                <div className="flex justify-center -mt-10 sm:-mt-12 relative z-20">
                   <motion.div 
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -359,9 +361,9 @@ export const AdminOrders = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="flex items-center gap-6 p-5 bg-slate-50/50 rounded-[2rem] border border-slate-100/50 group hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500"
+                  className="flex items-center gap-4 sm:gap-6 p-4 sm:p-5 bg-slate-50/50 rounded-2xl sm:rounded-[2rem] border border-slate-100/50 group hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500"
                 >
-                  <div className="h-24 w-24 rounded-2xl overflow-hidden shrink-0 shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                  <div className="h-16 w-16 sm:h-24 sm:w-24 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 shadow-2xl group-hover:scale-105 transition-transform duration-500">
                     <img 
                       src={selectedOrder.product?.thumbnail || 'https://picsum.photos/seed/product/200'} 
                       alt={selectedOrder.product?.title} 
@@ -371,41 +373,41 @@ export const AdminOrders = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[10px] font-black text-primary-500 uppercase tracking-widest mb-1">Digital Asset</p>
-                    <h3 className="text-xl font-black text-slate-900 leading-tight mb-2 truncate">{selectedOrder.product?.title || 'Unknown Product'}</h3>
+                    <h3 className="text-lg sm:text-xl font-black text-slate-900 leading-tight mb-2 truncate">{selectedOrder.product?.title || 'Unknown Product'}</h3>
                     <div className="flex items-center gap-2">
-                      <div className="px-3 py-1 bg-white rounded-full border border-slate-100 text-[10px] font-bold text-slate-500 flex items-center gap-1.5">
+                      <div className="px-2 sm:px-3 py-1 bg-white rounded-full border border-slate-100 text-[10px] font-bold text-slate-500 flex items-center gap-1.5">
                         <Package className="h-3 w-3" />
-                        {selectedOrder.product?.category || 'General'}
+                        <span className="truncate">{selectedOrder.product?.category || 'General'}</span>
                       </div>
                     </div>
                   </div>
                 </motion.div>
 
                 {/* Details Grid */}
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-2 gap-4 sm:gap-8">
                   <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 sm:gap-2">
                       <User className="h-3 w-3 text-primary-500" /> Customer
                     </p>
-                    <p className="text-lg font-black text-slate-900">{selectedOrder.user_name}</p>
+                    <p className="text-base sm:text-lg font-black text-slate-900 truncate">{selectedOrder.user_name}</p>
                   </motion.div>
                   <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="space-y-1 text-right">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 justify-end">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 sm:gap-2 justify-end">
                       <DollarSign className="h-3 w-3 text-emerald-500" /> Amount
                     </p>
-                    <p className="text-2xl font-black text-slate-900">${selectedOrder.amount.toFixed(2)}</p>
+                    <p className="text-xl sm:text-2xl font-black text-slate-900">${selectedOrder.amount.toFixed(2)}</p>
                   </motion.div>
                   <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 sm:gap-2">
                       <Phone className="h-3 w-3 text-primary-500" /> Sender
                     </p>
-                    <p className="font-bold text-slate-900">{selectedOrder.sender_number}</p>
+                    <p className="text-sm sm:text-base font-bold text-slate-900 truncate">{selectedOrder.sender_number}</p>
                   </motion.div>
                   <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="space-y-1 text-right">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 justify-end">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 sm:gap-2 justify-end">
                       <Calendar className="h-3 w-3 text-primary-500" /> Date
                     </p>
-                    <p className="font-bold text-slate-900">{new Date(selectedOrder.created_at).toLocaleDateString()}</p>
+                    <p className="text-sm sm:text-base font-bold text-slate-900">{new Date(selectedOrder.created_at).toLocaleDateString()}</p>
                   </motion.div>
                 </div>
 
@@ -414,16 +416,16 @@ export const AdminOrders = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="p-6 bg-slate-900 rounded-[2rem] text-white relative overflow-hidden group shadow-2xl shadow-slate-900/20"
+                  className="p-4 sm:p-6 bg-slate-900 rounded-2xl sm:rounded-[2rem] text-white relative overflow-hidden group shadow-2xl shadow-slate-900/20"
                 >
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <ShieldCheck className="h-16 w-16" />
+                    <ShieldCheck className="h-12 w-12 sm:h-16 sm:w-16" />
                   </div>
                   <div className="relative z-10 space-y-4">
                     <div className="flex items-center justify-between">
                       <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Transaction ID</p>
                       <span className={cn(
-                        "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-lg",
+                        "px-2 sm:px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-lg",
                         selectedOrder.payment_method === 'bKash' ? "bg-pink-500 shadow-pink-500/20" : 
                         selectedOrder.payment_method === 'Nagad' ? "bg-orange-500 shadow-orange-500/20" : 
                         "bg-yellow-500 shadow-yellow-500/20"
@@ -431,9 +433,9 @@ export const AdminOrders = () => {
                         {selectedOrder.payment_method}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between bg-white/5 p-5 rounded-2xl border border-white/10 backdrop-blur-sm">
-                      <span className="text-xl font-mono font-bold tracking-widest text-primary-400">{selectedOrder.transaction_id}</span>
-                      <Button size="sm" variant="ghost" className="text-white hover:bg-white/10 h-10 px-4 rounded-xl font-black text-[10px] uppercase tracking-widest">Copy</Button>
+                    <div className="flex items-center justify-between bg-white/5 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-white/10 backdrop-blur-sm">
+                      <span className="text-sm sm:text-lg font-mono font-bold tracking-widest text-primary-400 truncate mr-2">{selectedOrder.transaction_id}</span>
+                      <Button size="sm" variant="ghost" className="text-white hover:bg-white/10 h-8 sm:h-10 px-3 sm:px-4 rounded-lg sm:rounded-xl font-black text-[10px] uppercase tracking-widest shrink-0">Copy</Button>
                     </div>
                   </div>
                 </motion.div>
@@ -444,34 +446,34 @@ export const AdminOrders = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="grid grid-cols-2 gap-4 pt-4"
+                    className="grid grid-cols-2 gap-3 sm:gap-4 pt-2 sm:pt-4"
                   >
                     <Button 
                       onClick={() => handleUpdateStatus(selectedOrder.id, 'cancelled')}
                       disabled={updating === selectedOrder.id}
-                      className="h-16 rounded-[1.25rem] bg-rose-50 text-rose-600 hover:bg-rose-100 border-none font-black tracking-tight text-lg shadow-lg shadow-rose-500/5"
+                      className="h-12 sm:h-16 rounded-xl sm:rounded-[1.25rem] bg-rose-50 text-rose-600 hover:bg-rose-100 border-none font-black tracking-tight text-base sm:text-lg shadow-lg shadow-rose-500/5"
                     >
-                      {updating === selectedOrder.id ? <Loader2 className="h-6 w-6 animate-spin" /> : "Cancel"}
+                      {updating === selectedOrder.id ? <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin" /> : "Cancel"}
                     </Button>
                     <Button 
                       onClick={() => handleUpdateStatus(selectedOrder.id, 'success')}
                       disabled={updating === selectedOrder.id}
-                      className="h-16 rounded-[1.25rem] bg-emerald-500 text-white hover:bg-emerald-600 border-none font-black tracking-tight text-lg shadow-xl shadow-emerald-500/30"
+                      className="h-12 sm:h-16 rounded-xl sm:rounded-[1.25rem] bg-emerald-500 text-white hover:bg-emerald-600 border-none font-black tracking-tight text-base sm:text-lg shadow-xl shadow-emerald-500/30"
                     >
-                      {updating === selectedOrder.id ? <Loader2 className="h-6 w-6 animate-spin" /> : "Confirm"}
+                      {updating === selectedOrder.id ? <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin" /> : "Confirm"}
                     </Button>
                   </motion.div>
                 ) : (
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="pt-4"
+                    className="pt-2 sm:pt-4"
                   >
                     <div className={cn(
-                      "w-full h-16 rounded-[1.25rem] flex items-center justify-center gap-3 font-black tracking-tight text-lg shadow-inner",
+                      "w-full h-12 sm:h-16 rounded-xl sm:rounded-[1.25rem] flex items-center justify-center gap-2 sm:gap-3 font-black tracking-tight text-base sm:text-lg shadow-inner",
                       selectedOrder.status === 'success' ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
                     )}>
-                      {selectedOrder.status === 'success' ? <CheckCircle2 className="h-6 w-6" /> : <XCircle className="h-6 w-6" />}
+                      {selectedOrder.status === 'success' ? <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6" /> : <XCircle className="h-5 w-5 sm:h-6 sm:w-6" />}
                       ORDER {selectedOrder.status.toUpperCase()}
                     </div>
                   </motion.div>
@@ -479,8 +481,10 @@ export const AdminOrders = () => {
               </div>
             </motion.div>
           </div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
+        </div>
+      </div>
+      )}
+    </AnimatePresence>
+  </div>
+);
 };
