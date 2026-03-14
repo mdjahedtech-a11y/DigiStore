@@ -1,21 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Package, LayoutDashboard, Share2, ShoppingCart } from 'lucide-react';
+import { Home, Package, LayoutDashboard, Share2, ShoppingCart, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
-
-const NAV_ITEMS = [
-  { name: 'Home', path: '/', icon: Home },
-  { name: 'Products', path: '/products', icon: Package },
-  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'Cart', path: '/cart', icon: ShoppingCart },
-];
+import { supabase } from '@/lib/supabase';
 
 export const FloatingNav = () => {
   const { totalItems } = useCart();
   const location = useLocation();
   const activePath = location.pathname;
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const navItems = [
+    { name: 'Home', path: '/', icon: Home },
+    { name: 'Products', path: '/products', icon: Package },
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Cart', path: '/cart', icon: ShoppingCart },
+  ];
+
+  if (user?.email === 'mdjahedtech@gmail.com') {
+    navItems.push({ name: 'Admin', path: '/admin', icon: Settings });
+  }
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-md lg:hidden">
@@ -31,7 +51,7 @@ export const FloatingNav = () => {
         {/* Subtle Glow */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
         
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const isActive = activePath === item.path;
           const isCart = item.name === 'Cart';
           return (

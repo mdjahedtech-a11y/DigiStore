@@ -56,6 +56,9 @@ export const MainLayout = () => {
 
           <nav className="hidden md:flex items-center gap-6">
             <Link to="/products" className="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">Products</Link>
+            {user?.email === 'mdjahedtech@gmail.com' && (
+              <Link to="/admin" className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors">Admin Panel</Link>
+            )}
             <div className="h-4 w-px bg-slate-200"></div>
             <Link to="/cart" className="relative text-slate-600 hover:text-primary-600 transition-colors">
               <ShoppingCart className="h-5 w-5" />
@@ -112,7 +115,9 @@ export const MainLayout = () => {
               <Link to={user ? "/dashboard" : "/auth"} className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">
                 {user ? "Dashboard" : "Account"}
               </Link>
-              <Link to="/admin" className="p-3 text-primary-600 font-semibold hover:bg-primary-50 rounded-xl transition-colors">Admin Panel</Link>
+              {user?.email === 'mdjahedtech@gmail.com' && (
+                <Link to="/admin" className="p-3 text-primary-600 font-semibold hover:bg-primary-50 rounded-xl transition-colors">Admin Panel</Link>
+              )}
             </div>
           </motion.div>
         )}
