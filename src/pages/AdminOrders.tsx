@@ -12,6 +12,7 @@ export const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState<'pending' | 'success' | 'cancelled'>('pending');
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
@@ -20,13 +21,18 @@ export const AdminOrders = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = orders.filter(order => 
-      order.transaction_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.product?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filtered = orders.filter(order => {
+      const matchesSearch = 
+        order.transaction_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.product?.title?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesTab = order.status === activeTab;
+      
+      return matchesSearch && matchesTab;
+    });
     setFilteredOrders(filtered);
-  }, [searchTerm, orders]);
+  }, [searchTerm, orders, activeTab]);
 
   const loadOrders = async () => {
     try {
@@ -74,11 +80,45 @@ export const AdminOrders = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Orders Management</h1>
-          <p className="text-slate-500 text-sm">Review and approve customer payments.</p>
+          <p className="text-slate-500 text-sm">
+            {activeTab === 'pending' ? 'Review and approve customer payments.' : 
+             activeTab === 'success' ? 'View successfully completed orders.' : 
+             'View cancelled or rejected orders.'}
+          </p>
         </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        {/* Tab Switcher */}
+        <div className="flex border-b border-slate-100 p-1 bg-slate-50/50">
+          {[
+            { id: 'pending', label: 'Pending Orders', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+            { id: 'success', label: 'Success Orders', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { id: 'cancelled', label: 'Cancel Orders', icon: XCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-black transition-all duration-300 rounded-xl",
+                activeTab === tab.id 
+                  ? cn(tab.bg, tab.color, "shadow-sm")
+                  : "text-slate-400 hover:text-slate-600 hover:bg-slate-100/50"
+              )}
+            >
+              <tab.icon className={cn("h-4 w-4", activeTab === tab.id ? tab.color : "text-slate-400")} />
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+              <span className={cn(
+                "ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold",
+                activeTab === tab.id ? cn(tab.bg, "border border-current/20") : "bg-slate-100 text-slate-500"
+              )}>
+                {orders.filter(o => o.status === tab.id).length}
+              </span>
+            </button>
+          ))}
+        </div>
+
         {error && (
           <div className="p-4 bg-rose-50 border-b border-rose-100 text-rose-600 text-sm flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -215,7 +255,7 @@ export const AdminOrders = () => {
                   <td colSpan={6} className="py-20 text-center">
                     <div className="flex flex-col items-center gap-2 text-slate-400">
                       <ShoppingBag className="h-12 w-12 opacity-20" />
-                      <p>No orders found.</p>
+                      <p>No {activeTab} orders found.</p>
                     </div>
                   </td>
                 </tr>
