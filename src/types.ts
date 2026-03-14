@@ -38,3 +38,9 @@ export interface Order {
   updated_at?: string;
   product?: Product; // Joined data
 }
+
+export interface CartItem {
+  id: string;
+  product: Product;
+  quantity: number;
+}

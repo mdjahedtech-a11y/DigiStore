@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, Package, LayoutDashboard, Share2, ShoppingCart } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/context/CartContext';
 
 const NAV_ITEMS = [
   { name: 'Home', path: '/', icon: Home },
@@ -12,6 +13,7 @@ const NAV_ITEMS = [
 ];
 
 export const FloatingNav = () => {
+  const { totalItems } = useCart();
   const location = useLocation();
   const activePath = location.pathname;
 
@@ -31,6 +33,7 @@ export const FloatingNav = () => {
         
         {NAV_ITEMS.map((item) => {
           const isActive = activePath === item.path;
+          const isCart = item.name === 'Cart';
           return (
             <Link
               key={item.path}
@@ -56,6 +59,11 @@ export const FloatingNav = () => {
                   "h-5 w-5 transition-all duration-300",
                   isActive ? "scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : "hover:scale-110"
                 )} />
+                {isCart && totalItems > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-rose-500 text-[8px] font-bold text-white flex items-center justify-center border border-slate-900">
+                    {totalItems}
+                  </span>
+                )}
               </motion.div>
               
               <span className={cn(

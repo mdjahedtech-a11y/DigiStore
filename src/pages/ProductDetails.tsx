@@ -3,16 +3,19 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { productApi, orderApi, supabase } from '@/lib/supabase';
 import { Product, Order } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { Star, CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor, Loader2, X, CreditCard, Send, ExternalLink, Check } from 'lucide-react';
+import { Star, CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor, Loader2, X, CreditCard, Send, ExternalLink, Check, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/context/CartContext';
 
 export const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart, items } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
+  const isInCart = items.some(item => item.id === id);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -290,8 +293,23 @@ export const ProductDetails = () => {
                   </a>
                 )}
                 
-                <Button size="lg" variant="ghost" className="w-full h-14">
-                  Add to Cart
+                <Button 
+                  size="lg" 
+                  variant={isInCart ? "outline" : "ghost"} 
+                  className="w-full h-14 gap-2"
+                  onClick={() => product && addToCart(product)}
+                >
+                  {isInCart ? (
+                    <>
+                      <Check className="h-5 w-5" />
+                      In Cart
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="h-5 w-5" />
+                      Add to Cart
+                    </>
+                  )}
                 </Button>
               </div>
 

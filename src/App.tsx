@@ -9,6 +9,7 @@ import { AdminLayout } from './components/layout/AdminLayout';
 import { Home } from './pages/Home';
 import { ProductDetails } from './pages/ProductDetails';
 import { Dashboard } from './pages/Dashboard';
+import { Cart } from './pages/Cart';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminProducts } from './pages/AdminProducts';
 import { AdminOrders } from './pages/AdminOrders';
@@ -25,9 +26,8 @@ export default function App() {
           <Route path="/auth" element={<Auth />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/cart" element={<Cart />} />
           {/* Fallbacks for demo */}
-          <Route path="/products" element={<Navigate to="/" replace />} />
-          <Route path="/cart" element={<Navigate to="/dashboard" replace />} />
         </Route>
 
         {/* Admin Routes */}

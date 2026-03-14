@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, Download, ShoppingCart } from 'lucide-react';
+import { Star, Download, ShoppingCart, Check } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
+import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
   product: any;
@@ -11,6 +12,9 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
+  const { addToCart, items } = useCart();
+  const isInCart = items.some(item => item.id === product.id);
+
   return (
     <motion.div
       whileHover={{ y: -5 }}
@@ -66,9 +70,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className }) 
           <span className="text-xl font-bold text-slate-900">
             ${product.price.toFixed(2)}
           </span>
-          <Button size="sm" variant="gradient" className="gap-2">
-            <ShoppingCart className="h-4 w-4" />
-            Buy Now
+          <Button 
+            size="sm" 
+            variant={isInCart ? "outline" : "gradient"} 
+            className="gap-2"
+            onClick={(e) => {
+              e.preventDefault();
+              addToCart(product);
+            }}
+          >
+            {isInCart ? (
+              <>
+                <Check className="h-4 w-4" />
+                In Cart
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="h-4 w-4" />
+                Add to Cart
+              </>
+            )}
           </Button>
         </div>
       </div>

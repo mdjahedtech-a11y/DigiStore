@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/Input';
 import { FloatingNav } from '@/components/ui/FloatingNav';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/lib/supabase';
+import { useCart } from '@/context/CartContext';
 
 export const MainLayout = () => {
+  const { totalItems } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [user, setUser] = React.useState<any>(null);
   const location = useLocation();
@@ -57,9 +59,11 @@ export const MainLayout = () => {
             <div className="h-4 w-px bg-slate-200"></div>
             <Link to="/cart" className="relative text-slate-600 hover:text-primary-600 transition-colors">
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-primary-600 text-[10px] font-bold text-white flex items-center justify-center">
-                0
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-primary-600 text-[10px] font-bold text-white flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
             </Link>
             <Link to={user ? "/dashboard" : "/auth"}>
               <Button variant="outline" size="sm" className="gap-2 rounded-full">
@@ -97,6 +101,14 @@ export const MainLayout = () => {
                 />
               </div>
               <Link to="/products" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Products</Link>
+              <Link to="/cart" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors flex justify-between items-center">
+                <span>Cart</span>
+                {totalItems > 0 && (
+                  <span className="bg-primary-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
               <Link to={user ? "/dashboard" : "/auth"} className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">
                 {user ? "Dashboard" : "Account"}
               </Link>
