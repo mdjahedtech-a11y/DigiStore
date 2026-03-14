@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Users, Package, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, Loader2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { productApi, orderApi } from '@/lib/supabase';
-import { Product, Order } from '@/types';
+import { productApi, orderApi, profileApi } from '@/lib/supabase';
+import { Product, Order, Profile } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 const data = [
@@ -19,18 +19,21 @@ const data = [
 export const AdminDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [users, setUsers] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [productsData, ordersData] = await Promise.all([
+        const [productsData, ordersData, usersData] = await Promise.all([
           productApi.getAll(),
-          orderApi.getAll()
+          orderApi.getAll(),
+          profileApi.getAll()
         ]);
         setProducts(productsData);
         setOrders(ordersData);
+        setUsers(usersData);
       } catch (err) {
         console.error('Error loading admin data:', err);
       } finally {
@@ -64,7 +67,7 @@ export const AdminDashboard = () => {
         {[
           { title: 'Total Revenue', value: loading ? '...' : `$${totalRevenue.toLocaleString()}`, change: '+20.1%', isPositive: true, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
           { title: 'Total Sales', value: loading ? '...' : totalSales.toString(), change: '+15.2%', isPositive: true, icon: TrendingUp, color: 'text-primary-600', bg: 'bg-primary-100' },
-          { title: 'Active Users', value: '1,234', change: '+5.4%', isPositive: true, icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-100' },
+          { title: 'Active Users', value: loading ? '...' : users.length.toString(), change: '+5.4%', isPositive: true, icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-100' },
           { title: 'Total Products', value: loading ? '...' : products.length.toString(), change: '+2.1%', isPositive: true, icon: Package, color: 'text-rose-600', bg: 'bg-rose-100' },
         ].map((stat, i) => (
           <motion.div
