@@ -19,7 +19,7 @@ async function startServer() {
     app.use(vite.middlewares);
     
     // Explicit SPA fallback for dev mode
-    app.use('*', async (req, res, next) => {
+    app.use('*all', async (req, res, next) => {
       const url = req.originalUrl;
       try {
         // If it's an API request or has an extension, let it pass
@@ -55,7 +55,7 @@ async function startServer() {
     app.use(express.static(distPath));
     
     // SPA fallback for production
-    app.get('*', (req, res) => {
+    app.get('*all', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
