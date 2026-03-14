@@ -7,18 +7,30 @@ import { Button } from '@/components/ui/Button';
 
 export const AdminOrders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     loadOrders();
   }, []);
+
+  useEffect(() => {
+    const filtered = orders.filter(order => 
+      order.transaction_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.product?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredOrders(filtered);
+  }, [searchTerm, orders]);
 
   const loadOrders = async () => {
     try {
       setLoading(true);
       const data = await orderApi.getAll();
       setOrders(data);
+      setFilteredOrders(data);
     } catch (err) {
       console.error('Error loading orders:', err);
     } finally {
@@ -65,13 +77,15 @@ export const AdminOrders = () => {
             <input 
               type="text" 
               placeholder="Search by Transaction ID or User..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-primary-500 outline-none transition-all"
             />
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-2">
               <Filter className="h-4 w-4" />
-              All Orders
+              {searchTerm ? 'Filtered' : 'All Orders'}
             </Button>
           </div>
         </div>
@@ -100,8 +114,8 @@ export const AdminOrders = () => {
                     </td>
                   </tr>
                 ))
-              ) : orders.length > 0 ? (
-                orders.map((order) => (
+              ) : filteredOrders.length > 0 ? (
+                filteredOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">

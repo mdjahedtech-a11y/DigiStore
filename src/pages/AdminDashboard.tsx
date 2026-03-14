@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Users, Package, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, Loader2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { productApi } from '@/lib/supabase';
-import { Product } from '@/types';
+import { productApi, orderApi } from '@/lib/supabase';
+import { Product, Order } from '@/types';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 const data = [
@@ -18,14 +18,19 @@ const data = [
 
 export const AdminDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await productApi.getAll();
-        setProducts(data);
+        const [productsData, ordersData] = await Promise.all([
+          productApi.getAll(),
+          orderApi.getAll()
+        ]);
+        setProducts(productsData);
+        setOrders(ordersData);
       } catch (err) {
         console.error('Error loading admin data:', err);
       } finally {
@@ -34,6 +39,13 @@ export const AdminDashboard = () => {
     };
     loadData();
   }, []);
+
+  const totalRevenue = orders
+    .filter(o => o.status === 'success')
+    .reduce((acc, curr) => acc + curr.amount, 0);
+
+  const totalSales = orders.filter(o => o.status === 'success').length;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -50,9 +62,9 @@ export const AdminDashboard = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: 'Total Revenue', value: '$45,231.89', change: '+20.1%', isPositive: true, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
-          { title: 'Total Sales', value: '2,350', change: '+15.2%', isPositive: true, icon: TrendingUp, color: 'text-primary-600', bg: 'bg-primary-100' },
-          { title: 'Active Users', value: '12,234', change: '+5.4%', isPositive: true, icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-100' },
+          { title: 'Total Revenue', value: loading ? '...' : `$${totalRevenue.toLocaleString()}`, change: '+20.1%', isPositive: true, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+          { title: 'Total Sales', value: loading ? '...' : totalSales.toString(), change: '+15.2%', isPositive: true, icon: TrendingUp, color: 'text-primary-600', bg: 'bg-primary-100' },
+          { title: 'Active Users', value: '1,234', change: '+5.4%', isPositive: true, icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-100' },
           { title: 'Total Products', value: loading ? '...' : products.length.toString(), change: '+2.1%', isPositive: true, icon: Package, color: 'text-rose-600', bg: 'bg-rose-100' },
         ].map((stat, i) => (
           <motion.div
@@ -138,21 +150,25 @@ export const AdminDashboard = () => {
                   </div>
                 ))}
               </div>
-            ) : products.length > 0 ? (
-              products.slice(0, 5).map((product, i) => (
-                <div key={product.id} className="flex items-center justify-between">
+            ) : orders.length > 0 ? (
+              orders.slice(0, 5).map((order) => (
+                <div key={order.id} className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium overflow-hidden">
-                      <img src={product.thumbnail} alt="" className="w-full h-full object-cover" />
+                      {order.product?.thumbnail ? (
+                        <img src={order.product.thumbnail} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <Package className="h-5 w-5 text-slate-400" />
+                      )}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900 line-clamp-1">{product.title}</p>
-                      <p className="text-xs text-slate-500">{product.category}</p>
+                      <p className="text-sm font-medium text-slate-900 line-clamp-1">{order.product?.title || 'Unknown Product'}</p>
+                      <p className="text-xs text-slate-500">{order.user_name}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-slate-900">+${product.price.toFixed(2)}</p>
-                    <p className="text-xs text-slate-500">{i + 1}m ago</p>
+                    <p className="text-sm font-bold text-slate-900">+${order.amount.toFixed(2)}</p>
+                    <p className="text-xs text-slate-500">{new Date(order.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
               ))
