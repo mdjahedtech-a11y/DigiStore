@@ -55,8 +55,6 @@ export const AdminUsers = () => {
     switch (role) {
       case 'admin':
         return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-600 border border-rose-200 flex items-center gap-1"><Shield className="h-3 w-3" /> Admin</span>;
-      case 'affiliate':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-600 border border-indigo-200 flex items-center gap-1"><Sparkles className="h-3 w-3" /> Affiliate</span>;
       default:
         return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-600 border border-emerald-200 flex items-center gap-1"><UserCheck className="h-3 w-3" /> User</span>;
     }

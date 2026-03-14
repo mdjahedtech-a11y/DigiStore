@@ -24,7 +24,6 @@ const ADMIN_LINKS = [
   { name: 'Reviews', path: '/admin/reviews', icon: Star },
   { name: 'Coupons', path: '/admin/coupons', icon: Tag },
   { name: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
-  { name: 'Affiliates', path: '/admin/affiliates', icon: Share2 },
 ];
 
 export const AdminLayout = () => {

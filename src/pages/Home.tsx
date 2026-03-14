@@ -106,11 +106,6 @@ export const Home = () => {
               Explore Products
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Link to="/auth" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full border-slate-700 text-white hover:bg-slate-800">
-                Become an Affiliate
-              </Button>
-            </Link>
           </motion.div>
         </div>
       </section>

@@ -54,7 +54,6 @@ export const MainLayout = () => {
 
           <nav className="hidden md:flex items-center gap-6">
             <Link to="/products" className="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">Products</Link>
-            <Link to="/affiliate" className="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">Affiliates</Link>
             <div className="h-4 w-px bg-slate-200"></div>
             <Link to="/cart" className="relative text-slate-600 hover:text-primary-600 transition-colors">
               <ShoppingCart className="h-5 w-5" />
@@ -98,7 +97,6 @@ export const MainLayout = () => {
                 />
               </div>
               <Link to="/products" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Products</Link>
-              <Link to="/affiliate" className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">Affiliates</Link>
               <Link to={user ? "/dashboard" : "/auth"} className="p-3 text-slate-700 font-semibold hover:bg-slate-50 rounded-xl transition-colors">
                 {user ? "Dashboard" : "Account"}
               </Link>
@@ -131,7 +129,6 @@ export const MainLayout = () => {
             <h4 className="text-white font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/products" className="hover:text-white transition-colors">Browse Products</Link></li>
-              <li><Link to="/affiliate" className="hover:text-white transition-colors">Become an Affiliate</Link></li>
               <li><Link to="/auth" className="hover:text-white transition-colors">My Account</Link></li>
             </ul>
           </div>

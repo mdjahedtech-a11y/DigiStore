@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { name: 'Home', path: '/', icon: Home },
   { name: 'Products', path: '/products', icon: Package },
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'Affiliate', path: '/affiliate', icon: Share2 },
   { name: 'Cart', path: '/cart', icon: ShoppingCart },
 ];
 
