@@ -1,4 +1,4 @@
--- SQL to create the necessary tables for DigiStore in Supabase
+-- SQL to create the necessary tables for DigitalEmpire in Supabase
 
 -- 1. Create Products Table
 CREATE TABLE IF NOT EXISTS products (

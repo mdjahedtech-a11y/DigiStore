@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/Input';
 
 export const AffiliateDashboard = () => {
   const [copied, setCopied] = React.useState(false);
-  const referralLink = 'https://digistore.com/?ref=johndoe123';
+  const referralLink = 'https://digitalempire.com/?ref=johndoe123';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);

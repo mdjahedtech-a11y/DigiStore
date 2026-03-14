@@ -41,7 +41,7 @@ export const MainLayout = () => {
               <span className="text-white font-bold text-xl">D</span>
             </div>
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 hidden sm:block">
-              DigiStore
+              DigitalEmpire
             </span>
           </Link>
 
@@ -131,7 +131,7 @@ export const MainLayout = () => {
               <div className="h-8 w-8 rounded-xl bg-gradient-primary flex items-center justify-center">
                 <span className="text-white font-bold text-xl">D</span>
               </div>
-              <span className="text-xl font-bold text-white">DigiStore</span>
+              <span className="text-xl font-bold text-white">DigitalEmpire</span>
             </div>
             <p className="text-sm text-slate-400 max-w-sm">
               The ultimate marketplace for premium digital products. Download high-quality PDFs, templates, software, and courses instantly.
@@ -154,7 +154,7 @@ export const MainLayout = () => {
           </div>
         </div>
         <div className="container mx-auto px-4 mt-12 pt-8 border-t border-slate-800 text-sm text-center text-slate-500">
-          &copy; {new Date().getFullYear()} DigiStore. All rights reserved.
+          &copy; {new Date().getFullYear()} DigitalEmpire. All rights reserved.
         </div>
       </footer>
     </div>

@@ -217,7 +217,7 @@ export const Cart = () => {
 
             <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
               <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              Secure checkout powered by DigiStore
+              Secure checkout powered by DigitalEmpire
             </div>
           </div>
         </div>
