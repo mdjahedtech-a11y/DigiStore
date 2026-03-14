@@ -92,7 +92,7 @@ export const AdminOrders = () => {
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         {/* Tab Switcher */}
-        <div className="flex border-b border-slate-100 p-1 bg-slate-50/50">
+        <div className="flex overflow-x-auto no-scrollbar border-b border-slate-100 p-1 bg-slate-50/50">
           {[
             { id: 'pending', label: 'Pending Orders', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
             { id: 'success', label: 'Success Orders', icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
@@ -102,17 +102,17 @@ export const AdminOrders = () => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-black transition-all duration-300 rounded-xl",
+                "flex-1 min-w-[110px] flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-black transition-all duration-300 rounded-xl",
                 activeTab === tab.id 
                   ? cn(tab.bg, tab.color, "shadow-sm")
                   : "text-slate-400 hover:text-slate-600 hover:bg-slate-100/50"
               )}
             >
-              <tab.icon className={cn("h-4 w-4", activeTab === tab.id ? tab.color : "text-slate-400")} />
-              <span className="hidden sm:inline">{tab.label}</span>
-              <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+              <tab.icon className={cn("h-4 w-4 shrink-0", activeTab === tab.id ? tab.color : "text-slate-400")} />
+              <span className="hidden sm:inline whitespace-nowrap">{tab.label}</span>
+              <span className="sm:hidden whitespace-nowrap">{tab.label.split(' ')[0]}</span>
               <span className={cn(
-                "ml-1 px-2 py-0.5 rounded-full text-[10px] font-bold",
+                "px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0",
                 activeTab === tab.id ? cn(tab.bg, "border border-current/20") : "bg-slate-100 text-slate-500"
               )}>
                 {orders.filter(o => o.status === tab.id).length}
