@@ -14,6 +14,7 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import { AdminProducts } from './pages/AdminProducts';
 import { AdminOrders } from './pages/AdminOrders';
 import { AdminUsers } from './pages/AdminUsers';
+import { AdminCoupons } from './pages/AdminCoupons';
 import { Auth } from './pages/Auth';
 
 export default function App() {
@@ -38,7 +39,7 @@ export default function App() {
           <Route path="users" element={<AdminUsers />} />
           {/* Placeholders for other admin pages */}
           <Route path="reviews" element={<div className="p-8 text-slate-500">Reviews Management (Coming Soon)</div>} />
-          <Route path="coupons" element={<div className="p-8 text-slate-500">Coupons Management (Coming Soon)</div>} />
+          <Route path="coupons" element={<AdminCoupons />} />
           <Route path="analytics" element={<div className="p-8 text-slate-500">Analytics (Coming Soon)</div>} />
         </Route>
 

@@ -40,6 +40,13 @@ export interface Order {
   product?: Product; // Joined data
 }
 
+export interface Coupon {
+  id: string;
+  code: string;
+  discount_percentage: number;
+  created_at: string;
+}
+
 export interface CartItem {
   id: string;
   product: Product;

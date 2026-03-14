@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
-import { supabase, orderApi } from '@/lib/supabase';
+import { supabase, orderApi, couponApi } from '@/lib/supabase';
+import { Coupon } from '@/types';
 
 export const Cart = () => {
   const { items, removeFromCart, updateQuantity, totalPrice, totalItems, clearCart } = useCart();
@@ -20,15 +21,36 @@ export const Cart = () => {
   const [submitting, setSubmitting] = useState(false);
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [couponError, setCouponError] = useState('');
   const navigate = useNavigate();
 
-  const handleApplyCoupon = () => {
-    if (couponCode.trim()) {
-      console.log(`Coupon code applied: ${couponCode}`);
-      // Simulate coupon application
-      alert(`Coupon code "${couponCode}" applied successfully!`);
+  const discountPercentage = appliedCoupon ? appliedCoupon.discount_percentage : 0;
+  const discountAmount = (totalPrice * discountPercentage) / 100;
+  const finalPrice = totalPrice - discountAmount;
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    
+    try {
+      setIsApplyingCoupon(true);
+      setCouponError('');
+      const coupon = await couponApi.getByCode(couponCode.trim().toUpperCase());
+      setAppliedCoupon(coupon);
       setCouponCode('');
+    } catch (err) {
+      setCouponError('Invalid or expired coupon code');
+      setAppliedCoupon(null);
+    } finally {
+      setIsApplyingCoupon(false);
     }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode('');
+    setCouponError('');
   };
 
   const handleCheckout = async () => {
@@ -55,10 +77,14 @@ export const Cart = () => {
 
       // Create orders for each item in the cart
       for (const item of items) {
+        const itemTotal = item.product.price * item.quantity;
+        const itemDiscount = appliedCoupon ? (itemTotal * appliedCoupon.discount_percentage) / 100 : 0;
+        const finalItemAmount = itemTotal - itemDiscount;
+
         await orderApi.create({
           user_id: user.id,
           product_id: item.id,
-          amount: item.product.price * item.quantity,
+          amount: finalItemAmount,
           payment_method: paymentMethod,
           sender_number: paymentData.senderNumber,
           transaction_id: paymentData.transactionId,
@@ -191,21 +217,37 @@ export const Cart = () => {
             
             <div className="mb-8">
               <label className="text-sm font-bold text-slate-700 mb-2 block">Coupon Code</label>
-              <div className="flex gap-2">
-                <Input 
-                  placeholder="Enter code" 
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  className="bg-slate-50 border-slate-200 focus:bg-white"
-                />
-                <Button 
-                  variant="outline" 
-                  onClick={handleApplyCoupon}
-                  disabled={!couponCode.trim()}
-                >
-                  Apply
-                </Button>
-              </div>
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-3 rounded-xl">
+                  <div className="flex items-center gap-2 text-emerald-700">
+                    <Check className="h-4 w-4" />
+                    <span className="font-bold">{appliedCoupon.code}</span>
+                    <span className="text-sm">(-{appliedCoupon.discount_percentage}%)</span>
+                  </div>
+                  <button onClick={removeCoupon} className="text-emerald-700 hover:text-emerald-800">
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input 
+                      placeholder="Enter code" 
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      className="bg-slate-50 border-slate-200 focus:bg-white uppercase"
+                    />
+                    <Button 
+                      variant="outline" 
+                      onClick={handleApplyCoupon}
+                      disabled={!couponCode.trim() || isApplyingCoupon}
+                    >
+                      {isApplyingCoupon ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Apply'}
+                    </Button>
+                  </div>
+                  {couponError && <p className="text-rose-500 text-sm font-medium">{couponError}</p>}
+                </div>
+              )}
             </div>
 
             <div className="space-y-4 mb-8">
@@ -213,6 +255,12 @@ export const Cart = () => {
                 <span>Subtotal</span>
                 <span>${totalPrice.toFixed(2)}</span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-emerald-600 font-medium">
+                  <span>Discount ({appliedCoupon.discount_percentage}%)</span>
+                  <span>-${discountAmount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-slate-500">
                 <span>Tax</span>
                 <span>$0.00</span>
@@ -220,7 +268,7 @@ export const Cart = () => {
               <div className="h-px bg-slate-100 my-4" />
               <div className="flex justify-between text-xl font-bold text-slate-900">
                 <span>Total</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>${finalPrice.toFixed(2)}</span>
               </div>
             </div>
 
@@ -309,7 +357,7 @@ export const Cart = () => {
                       <div className="relative z-10 flex items-center justify-between">
                         <div>
                           <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-1">Secure Checkout</h2>
-                          <p className="text-white/80 font-medium">Total Amount: ${totalPrice.toFixed(2)}</p>
+                          <p className="text-white/80 font-medium">Total Amount: ${finalPrice.toFixed(2)}</p>
                         </div>
                         <button 
                           onClick={() => setIsPaymentModalOpen(false)} 
@@ -364,7 +412,7 @@ export const Cart = () => {
                         <div className="relative z-10">
                           <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Payment Instructions</p>
                           <p className="text-sm font-medium leading-relaxed">
-                            Send <span className="text-primary-400 font-black text-lg">৳{(totalPrice * 120).toFixed(0)}</span> to the following {paymentMethod} number:
+                            Send <span className="text-primary-400 font-black text-lg">৳{(finalPrice * 120).toFixed(0)}</span> to the following {paymentMethod} number:
                           </p>
                           <div className="mt-4 flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/10">
                             <span className="text-xl font-mono font-bold tracking-wider">{paymentNumbers[paymentMethod]}</span>

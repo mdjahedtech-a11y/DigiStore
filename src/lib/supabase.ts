@@ -155,6 +155,82 @@ export const profileApi = {
   }
 };
 
+export const couponApi = {
+  async getAll() {
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data as any[];
+    } catch (err) {
+      console.warn('Falling back to localStorage for coupons', err);
+      const local = localStorage.getItem('local_coupons');
+      return local ? JSON.parse(local) : [];
+    }
+  },
+
+  async getByCode(code: string) {
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('code', code)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      const local = localStorage.getItem('local_coupons');
+      const coupons = local ? JSON.parse(local) : [];
+      const found = coupons.find((c: any) => c.code === code);
+      if (found) return found;
+      throw new Error('Coupon not found');
+    }
+  },
+
+  async create(coupon: { code: string; discount_percentage: number }) {
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .insert([coupon])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      const newCoupon = { 
+        id: crypto.randomUUID(), 
+        ...coupon, 
+        created_at: new Date().toISOString() 
+      };
+      const local = localStorage.getItem('local_coupons');
+      const coupons = local ? JSON.parse(local) : [];
+      localStorage.setItem('local_coupons', JSON.stringify([newCoupon, ...coupons]));
+      return newCoupon;
+    }
+  },
+
+  async delete(id: string) {
+    try {
+      const { error } = await supabase
+        .from('coupons')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    } catch (err) {
+      const local = localStorage.getItem('local_coupons');
+      if (local) {
+        const coupons = JSON.parse(local).filter((c: any) => c.id !== id);
+        localStorage.setItem('local_coupons', JSON.stringify(coupons));
+      }
+    }
+  }
+};
+
 export const CATEGORIES = [
   'All',
   'PDF',
