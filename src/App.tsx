@@ -24,6 +24,7 @@ export default function App() {
         {/* Public & User Routes */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/dashboard" element={<Dashboard />} />

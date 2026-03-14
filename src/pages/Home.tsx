@@ -48,17 +48,17 @@ export const Home = () => {
         {/* Animated Background Overlay */}
         <div className="absolute inset-0 z-0 overflow-hidden bg-slate-950">
           {/* Colorful glowing orbs */}
-          <div className="absolute top-[20%] left-[20%] w-[40vw] h-[40vw] bg-primary-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" />
-          <div className="absolute bottom-[20%] right-[20%] w-[40vw] h-[40vw] bg-secondary-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-[40%] left-[60%] w-[30vw] h-[30vw] bg-emerald-600/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" style={{ animationDelay: '4s' }} />
+          <div className="absolute top-[20%] left-[20%] w-[40vw] h-[40vw] bg-primary-600/20 rounded-full blur-[80px] md:blur-[120px] mix-blend-screen animate-pulse will-change-transform" />
+          <div className="absolute bottom-[20%] right-[20%] w-[40vw] h-[40vw] bg-secondary-600/20 rounded-full blur-[80px] md:blur-[120px] mix-blend-screen animate-pulse will-change-transform" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-[40%] left-[60%] w-[30vw] h-[30vw] bg-emerald-600/20 rounded-full blur-[80px] md:blur-[120px] mix-blend-screen animate-pulse will-change-transform" style={{ animationDelay: '4s' }} />
 
           {/* Floating Circular Icons */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40 sm:opacity-60">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30 sm:opacity-60">
             {/* PDF Icon */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[300px] h-[300px] sm:w-[500px] sm:h-[500px]"
+              className="absolute w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] will-change-transform"
             >
               <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-16 h-16 bg-gradient-to-br from-red-500 to-rose-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(225,29,72,0.5)]">
                 <FileText className="h-8 w-8 text-white" />
@@ -69,7 +69,7 @@ export const Home = () => {
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[400px] h-[400px] sm:w-[650px] sm:h-[650px]"
+              className="absolute w-[400px] h-[400px] sm:w-[650px] sm:h-[650px] will-change-transform"
             >
               <div className="absolute top-1/4 -right-4 w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(79,70,229,0.5)]">
                 <Book className="h-7 w-7 text-white" />
@@ -80,7 +80,7 @@ export const Home = () => {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[500px] h-[500px] sm:w-[800px] sm:h-[800px]"
+              className="absolute w-[500px] h-[500px] sm:w-[800px] sm:h-[800px] will-change-transform"
             >
               <div className="absolute bottom-0 left-1/4 w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(13,148,136,0.5)]">
                 <Monitor className="h-10 w-10 text-white" />
@@ -91,7 +91,7 @@ export const Home = () => {
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[350px] h-[350px] sm:w-[550px] sm:h-[550px]"
+              className="absolute w-[350px] h-[350px] sm:w-[550px] sm:h-[550px] will-change-transform"
             >
               <div className="absolute bottom-1/4 -left-6 w-16 h-16 bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(147,51,234,0.5)]">
                 <Palette className="h-8 w-8 text-white" />
@@ -102,7 +102,7 @@ export const Home = () => {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 55, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[450px] h-[450px] sm:w-[700px] sm:h-[700px]"
+              className="absolute w-[450px] h-[450px] sm:w-[700px] sm:h-[700px] will-change-transform"
             >
               <div className="absolute -bottom-4 right-1/3 w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(234,88,12,0.5)]">
                 <VideoIcon className="h-8 w-8 text-white" />

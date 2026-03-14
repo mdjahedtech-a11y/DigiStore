@@ -92,7 +92,7 @@ export const MainLayout = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="md:hidden absolute top-16 left-0 w-full bg-white border-b border-slate-200 shadow-xl z-40"
+            className="md:hidden fixed top-16 left-0 w-full bg-white border-b border-slate-200 shadow-xl z-40"
           >
             <div className="p-4 flex flex-col gap-2">
               <div className="relative mb-2">
@@ -129,7 +129,7 @@ export const MainLayout = () => {
 
       <FloatingNav />
 
-      <footer className="bg-slate-900 text-slate-300 py-12 pb-12 mt-auto">
+      <footer className="bg-slate-900 text-slate-300 py-12 pb-28 lg:pb-12 mt-auto">
         <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
