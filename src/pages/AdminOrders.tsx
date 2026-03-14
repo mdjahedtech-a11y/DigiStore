@@ -11,6 +11,7 @@ export const AdminOrders = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadOrders();
@@ -41,10 +42,12 @@ export const AdminOrders = () => {
   const handleUpdateStatus = async (id: string, status: 'success' | 'cancelled') => {
     try {
       setUpdating(id);
+      setError(null);
       await orderApi.updateStatus(id, status);
-      loadOrders();
-    } catch (err) {
+      await loadOrders();
+    } catch (err: any) {
       console.error('Error updating order status:', err);
+      setError(err.message || 'Failed to update order status. Check your admin permissions.');
     } finally {
       setUpdating(null);
     }
@@ -71,6 +74,17 @@ export const AdminOrders = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        {error && (
+          <div className="p-4 bg-rose-50 border-b border-rose-100 text-rose-600 text-sm flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <XCircle className="h-4 w-4" />
+              <p>{error}</p>
+            </div>
+            <button onClick={() => setError(null)} className="p-1 hover:bg-rose-100 rounded">
+              <XCircle className="h-4 w-4" />
+            </button>
+          </div>
+        )}
         <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
