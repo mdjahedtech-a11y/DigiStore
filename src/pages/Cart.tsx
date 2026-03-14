@@ -25,7 +25,7 @@ export const Cart = () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      navigate('/auth?redirect=/cart');
+      navigate('/auth?mode=signup&redirect=/cart');
       return;
     }
 
@@ -39,7 +39,7 @@ export const Cart = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        navigate('/auth');
+        navigate('/auth?mode=signup&redirect=/cart');
         return;
       }
 

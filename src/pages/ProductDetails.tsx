@@ -52,7 +52,7 @@ export const ProductDetails = () => {
 
   const handleBuyNow = () => {
     if (!user) {
-      navigate(`/auth?redirect=${encodeURIComponent(window.location.pathname)}`);
+      navigate(`/auth?mode=signup&redirect=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
     setIsPaymentModalOpen(true);
