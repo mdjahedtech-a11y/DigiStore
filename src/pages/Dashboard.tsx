@@ -173,23 +173,38 @@ export const Dashboard = () => {
                                   <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">Active</span>
                                 </div>
                                 <p className="text-sm text-slate-500 mb-4 line-clamp-2">{order.product?.description}</p>
-                                <div className="mt-auto flex items-center justify-between">
+                                <div className="mt-auto flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                   <div className="flex items-center gap-4 text-sm text-slate-500">
                                     <span className="flex items-center gap-1"><Clock className="h-4 w-4" /> Purchased: {new Date(order.created_at).toLocaleDateString()}</span>
                                     <span className="flex items-center gap-1"><Shield className="h-4 w-4" /> Secure Link</span>
                                   </div>
-                                  {order.product?.download_url && (
-                                    <a 
-                                      href={order.product.download_url} 
-                                      target="_blank" 
-                                      rel="noopener noreferrer"
-                                    >
-                                      <Button size="sm" variant="gradient" className="gap-2">
-                                        <Download className="h-4 w-4" />
-                                        Download File
-                                      </Button>
-                                    </a>
-                                  )}
+                                  <div className="flex flex-wrap gap-2 justify-end">
+                                    {order.product?.download_url && (
+                                      <a 
+                                        href={order.product.download_url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                      >
+                                        <Button size="sm" variant="gradient" className="gap-2">
+                                          <Download className="h-4 w-4" />
+                                          {order.product.download_urls && order.product.download_urls.length > 0 ? 'Main File' : 'Download File'}
+                                        </Button>
+                                      </a>
+                                    )}
+                                    {order.product?.download_urls?.map((link, idx) => (
+                                      <a 
+                                        key={idx}
+                                        href={link.url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                      >
+                                        <Button size="sm" variant="outline" className="gap-2 border-primary-200 text-primary-700 hover:bg-primary-50">
+                                          <Download className="h-4 w-4" />
+                                          {link.title || `Download Part ${idx + 1}`}
+                                        </Button>
+                                      </a>
+                                    ))}
+                                  </div>
                                 </div>
                               </div>
                             </div>

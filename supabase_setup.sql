@@ -14,9 +14,13 @@ CREATE TABLE IF NOT EXISTS products (
   featured BOOLEAN DEFAULT false,
   trending BOOLEAN DEFAULT false,
   download_url TEXT,
+  download_urls JSONB DEFAULT '[]'::jsonb,
   preview_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- If you already created the products table, run this line to add the new column:
+-- ALTER TABLE products ADD COLUMN IF NOT EXISTS download_urls JSONB DEFAULT '[]'::jsonb;
 
 -- 2. Create Orders Table
 CREATE TABLE IF NOT EXISTS orders (

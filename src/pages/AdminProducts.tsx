@@ -21,6 +21,7 @@ export const AdminProducts = () => {
     category: 'PDF',
     thumbnail: '',
     download_url: '',
+    download_urls: [],
     preview_url: '',
     featured: false,
     rating: 5,
@@ -57,6 +58,7 @@ export const AdminProducts = () => {
         category: 'PDF',
         thumbnail: '',
         download_url: '',
+        download_urls: [],
         preview_url: '',
         featured: false,
         rating: 5,
@@ -352,17 +354,84 @@ export const AdminProducts = () => {
                   </div>
 
                   <div className="space-y-4 md:col-span-2">
-                    <label className="block text-sm font-bold text-slate-700">Download Link (Hidden until paid)</label>
+                    <div className="flex items-center justify-between">
+                      <label className="block text-sm font-bold text-slate-700">Download Links (Hidden until paid)</label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const currentLinks = formData.download_urls || [];
+                          setFormData({
+                            ...formData,
+                            download_urls: [...currentLinks, { title: '', url: '' }]
+                          });
+                        }}
+                        className="h-8 text-xs"
+                      >
+                        <Plus className="h-3 w-3 mr-1" /> Add Link
+                      </Button>
+                    </div>
+                    
+                    {/* Main link */}
                     <div className="relative">
                       <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input 
-                        required
+                        required={!formData.download_urls || formData.download_urls.length === 0}
                         className="pl-10"
-                        value={formData.download_url}
+                        value={formData.download_url || ''}
                         onChange={(e) => setFormData({ ...formData, download_url: e.target.value })}
-                        placeholder="Google Drive Download Link" 
+                        placeholder="Main Download Link (e.g. Google Drive)" 
                       />
                     </div>
+
+                    {/* Multiple links */}
+                    {formData.download_urls && formData.download_urls.length > 0 && (
+                      <div className="space-y-3 mt-4">
+                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Additional Links</p>
+                        {formData.download_urls.map((link, index) => (
+                          <div key={index} className="flex gap-2 items-start">
+                            <div className="flex-1 space-y-2">
+                              <Input
+                                required
+                                placeholder="Link Title (e.g. Part 1, Source Code)"
+                                value={link.title}
+                                onChange={(e) => {
+                                  const newLinks = [...(formData.download_urls || [])];
+                                  newLinks[index].title = e.target.value;
+                                  setFormData({ ...formData, download_urls: newLinks });
+                                }}
+                              />
+                              <div className="relative">
+                                <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                <Input
+                                  required
+                                  className="pl-10"
+                                  placeholder="URL (e.g. https://...)"
+                                  value={link.url}
+                                  onChange={(e) => {
+                                    const newLinks = [...(formData.download_urls || [])];
+                                    newLinks[index].url = e.target.value;
+                                    setFormData({ ...formData, download_urls: newLinks });
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newLinks = [...(formData.download_urls || [])];
+                                newLinks.splice(index, 1);
+                                setFormData({ ...formData, download_urls: newLinks });
+                              }}
+                              className="p-2.5 mt-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                            >
+                              <Trash2 className="h-5 w-5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-3 md:col-span-2">

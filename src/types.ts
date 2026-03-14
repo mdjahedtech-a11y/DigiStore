@@ -10,7 +10,8 @@ export interface Product {
   sales: number;
   featured: boolean;
   trending: boolean;
-  download_url?: string; // Hidden until payment
+  download_url?: string; // Hidden until payment (legacy)
+  download_urls?: { title: string; url: string }[]; // Multiple download links
   preview_url?: string; // Google Drive preview link or similar
   created_at?: string;
 }
