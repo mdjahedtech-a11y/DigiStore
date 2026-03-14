@@ -19,7 +19,17 @@ export const Cart = () => {
   });
   const [submitting, setSubmitting] = useState(false);
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [couponCode, setCouponCode] = useState('');
   const navigate = useNavigate();
+
+  const handleApplyCoupon = () => {
+    if (couponCode.trim()) {
+      console.log(`Coupon code applied: ${couponCode}`);
+      // Simulate coupon application
+      alert(`Coupon code "${couponCode}" applied successfully!`);
+      setCouponCode('');
+    }
+  };
 
   const handleCheckout = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -179,6 +189,25 @@ export const Cart = () => {
           <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl sticky top-24">
             <h3 className="text-xl font-bold text-slate-900 mb-6">Order Summary</h3>
             
+            <div className="mb-8">
+              <label className="text-sm font-bold text-slate-700 mb-2 block">Coupon Code</label>
+              <div className="flex gap-2">
+                <Input 
+                  placeholder="Enter code" 
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="bg-slate-50 border-slate-200 focus:bg-white"
+                />
+                <Button 
+                  variant="outline" 
+                  onClick={handleApplyCoupon}
+                  disabled={!couponCode.trim()}
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-slate-500">
                 <span>Subtotal</span>
