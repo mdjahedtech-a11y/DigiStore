@@ -112,6 +112,25 @@ export const orderApi = {
     }
   },
 
+  async createMany(orders: Omit<Order, 'id' | 'created_at' | 'status'>[]) {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .insert(orders.map(order => ({ ...order, status: 'pending' })))
+        .select();
+      
+      if (error) {
+        console.error('Supabase Order Create Many Error:', error);
+        throw error;
+      }
+      
+      return data as Order[];
+    } catch (err) {
+      console.error('Order API Create Many Exception:', err);
+      throw err;
+    }
+  },
+
   async getAll() {
     const { data, error } = await supabase
       .from('orders')

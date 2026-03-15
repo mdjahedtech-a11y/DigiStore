@@ -75,13 +75,13 @@ export const Cart = () => {
         return;
       }
 
-      // Create orders for each item in the cart
-      for (const item of items) {
+      // Prepare orders for each item in the cart
+      const ordersToCreate = items.map(item => {
         const itemTotal = item.product.price * item.quantity;
         const itemDiscount = appliedCoupon ? (itemTotal * appliedCoupon.discount_percentage) / 100 : 0;
         const finalItemAmount = itemTotal - itemDiscount;
 
-        await orderApi.create({
+        return {
           user_id: user.id,
           product_id: item.id,
           amount: finalItemAmount,
@@ -89,8 +89,10 @@ export const Cart = () => {
           sender_number: paymentData.senderNumber,
           transaction_id: paymentData.transactionId,
           user_name: paymentData.name,
-        });
-      }
+        };
+      });
+
+      await orderApi.createMany(ordersToCreate);
 
       setCheckoutStatus('success');
       clearCart();
@@ -315,7 +317,7 @@ export const Cart = () => {
               initial={{ opacity: 0, scale: 0.9, y: 40 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden"
+              className="relative w-full max-w-xl bg-white rounded-3xl sm:rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden my-auto"
             >
               <AnimatePresence mode="wait">
                 {checkoutStatus === 'success' ? (
@@ -324,13 +326,13 @@ export const Cart = () => {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    className="p-12 text-center space-y-6"
+                    className="p-8 sm:p-12 text-center space-y-6"
                   >
-                    <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Check className="h-12 w-12 stroke-[3]" />
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Check className="h-10 w-10 sm:h-12 sm:w-12 stroke-[3]" />
                     </div>
-                    <h2 className="text-3xl font-black text-slate-900 tracking-tight">Order Placed!</h2>
-                    <p className="text-slate-500 font-medium text-lg max-w-xs mx-auto">
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Order Placed!</h2>
+                    <p className="text-slate-500 font-medium text-base sm:text-lg max-w-xs mx-auto">
                       Your transaction is being verified. You'll be redirected to your dashboard in a moment.
                     </p>
                     <div className="pt-4">
@@ -348,7 +350,7 @@ export const Cart = () => {
                   <motion.div key="form" exit={{ opacity: 0, y: -20 }}>
                     {/* Vibrant Header */}
                     <div className={cn(
-                      "p-8 text-white relative overflow-hidden bg-gradient-to-br transition-all duration-500",
+                      "p-6 sm:p-8 text-white relative overflow-hidden bg-gradient-to-br transition-all duration-500",
                       paymentColors[paymentMethod]
                     )}>
                       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
@@ -356,47 +358,47 @@ export const Cart = () => {
                       
                       <div className="relative z-10 flex items-center justify-between">
                         <div>
-                          <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-1">Secure Checkout</h2>
-                          <p className="text-white/80 font-medium">Total Amount: ${finalPrice.toFixed(2)}</p>
+                          <h2 className="text-xl sm:text-3xl font-black tracking-tight mb-1">Secure Checkout</h2>
+                          <p className="text-white/80 font-medium text-sm sm:text-base">Total Amount: ${finalPrice.toFixed(2)}</p>
                         </div>
                         <button 
                           onClick={() => setIsPaymentModalOpen(false)} 
                           className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
                         >
-                          <X className="h-6 w-6" />
+                          <X className="h-5 w-5 sm:h-6 sm:w-6" />
                         </button>
                       </div>
                     </div>
 
-                    <form onSubmit={handlePaymentSubmit} className="p-8 space-y-8">
+                    <form onSubmit={handlePaymentSubmit} className="p-5 sm:p-8 space-y-6 sm:space-y-8">
                       {/* Payment Methods */}
-                      <div className="space-y-4">
-                        <label className="text-sm font-black text-slate-400 uppercase tracking-widest">Select Payment Method</label>
-                        <div className="grid grid-cols-3 gap-4">
+                      <div className="space-y-3 sm:space-y-4">
+                        <label className="text-[10px] sm:text-sm font-black text-slate-400 uppercase tracking-widest">Select Payment Method</label>
+                        <div className="grid grid-cols-3 gap-2 sm:gap-4">
                           {(['bKash', 'Nagad', 'Binance'] as const).map((method) => (
                             <button
                               key={method}
                               type="button"
                               onClick={() => setPaymentMethod(method)}
                               className={cn(
-                                "relative py-4 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center gap-2 group",
+                                "relative py-3 sm:py-4 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 flex flex-col items-center gap-1 sm:gap-2 group",
                                 paymentMethod === method 
                                   ? "border-primary-500 bg-primary-50 text-primary-600 shadow-lg shadow-primary-500/10" 
                                   : "border-slate-100 hover:border-slate-200 text-slate-400 hover:text-slate-600"
                               )}
                             >
                               <div className={cn(
-                                "w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110",
+                                "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center transition-transform group-hover:scale-110",
                                 paymentMethod === method ? "bg-primary-500 text-white" : "bg-slate-100"
                               )}>
-                                {method === 'bKash' && <span className="font-bold text-xs">bK</span>}
-                                {method === 'Nagad' && <span className="font-bold text-xs">Ng</span>}
-                                {method === 'Binance' && <span className="font-bold text-xs">Bi</span>}
+                                {method === 'bKash' && <span className="font-bold text-[10px] sm:text-xs">bK</span>}
+                                {method === 'Nagad' && <span className="font-bold text-[10px] sm:text-xs">Ng</span>}
+                                {method === 'Binance' && <span className="font-bold text-[10px] sm:text-xs">Bi</span>}
                               </div>
-                              <span className="text-xs font-black uppercase tracking-wider">{method}</span>
+                              <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider">{method}</span>
                               {paymentMethod === method && (
-                                <motion.div layoutId="active-method" className="absolute -top-2 -right-2 bg-primary-500 text-white rounded-full p-1 shadow-lg">
-                                  <Check className="h-3 w-3 stroke-[4]" />
+                                <motion.div layoutId="active-method" className="absolute -top-1.5 -right-1.5 bg-primary-500 text-white rounded-full p-0.5 sm:p-1 shadow-lg">
+                                  <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3 stroke-[4]" />
                                 </motion.div>
                               )}
                             </button>
@@ -405,52 +407,52 @@ export const Cart = () => {
                       </div>
 
                       {/* Instructions */}
-                      <div className="p-6 bg-slate-900 rounded-3xl text-white space-y-4 relative overflow-hidden group">
+                      <div className="p-4 sm:p-6 bg-slate-900 rounded-2xl sm:rounded-3xl text-white space-y-3 sm:space-y-4 relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                          <CreditCard className="h-12 w-12" />
+                          <CreditCard className="h-8 w-8 sm:h-12 sm:w-12" />
                         </div>
                         <div className="relative z-10">
-                          <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Payment Instructions</p>
-                          <p className="text-sm font-medium leading-relaxed">
-                            Send <span className="text-primary-400 font-black text-lg">৳{(finalPrice * 120).toFixed(0)}</span> to the following {paymentMethod} number:
+                          <p className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1 sm:mb-2">Payment Instructions</p>
+                          <p className="text-xs sm:text-sm font-medium leading-relaxed">
+                            Send <span className="text-primary-400 font-black text-base sm:text-lg">৳{(finalPrice * 120).toFixed(0)}</span> to the following {paymentMethod} number:
                           </p>
-                          <div className="mt-4 flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/10">
-                            <span className="text-xl font-mono font-bold tracking-wider">{paymentNumbers[paymentMethod]}</span>
-                            <Button size="sm" variant="ghost" className="text-primary-400 hover:text-primary-300 hover:bg-white/10">Copy</Button>
+                          <div className="mt-3 sm:mt-4 flex items-center justify-between bg-white/5 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10">
+                            <span className="text-base sm:text-xl font-mono font-bold tracking-wider">{paymentNumbers[paymentMethod]}</span>
+                            <Button size="sm" variant="ghost" className="text-primary-400 hover:text-primary-300 hover:bg-white/10 h-8 sm:h-10">Copy</Button>
                           </div>
                         </div>
                       </div>
 
                       {/* Form Inputs */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div className="space-y-2 sm:col-span-2">
-                          <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Your Full Name</label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <div className="space-y-1.5 sm:space-y-2 sm:col-span-2">
+                          <label className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Your Full Name</label>
                           <Input
                             required
                             placeholder="Full Name"
                             value={paymentData.name}
                             onChange={(e) => setPaymentData({ ...paymentData, name: e.target.value })}
-                            className="h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-2xl text-slate-900 font-medium"
+                            className="h-12 sm:h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-xl sm:rounded-2xl text-slate-900 font-medium"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Sender Number</label>
+                        <div className="space-y-1.5 sm:space-y-2">
+                          <label className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Sender Number</label>
                           <Input
                             required
                             placeholder="017XXXXXXXX"
                             value={paymentData.senderNumber}
                             onChange={(e) => setPaymentData({ ...paymentData, senderNumber: e.target.value })}
-                            className="h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-2xl text-slate-900 font-medium"
+                            className="h-12 sm:h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-xl sm:rounded-2xl text-slate-900 font-medium"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Transaction ID</label>
+                        <div className="space-y-1.5 sm:space-y-2">
+                          <label className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Transaction ID</label>
                           <Input
                             required
                             placeholder="Enter Transaction ID"
                             value={paymentData.transactionId}
                             onChange={(e) => setPaymentData({ ...paymentData, transactionId: e.target.value })}
-                            className="h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-2xl text-slate-900 font-medium"
+                            className="h-12 sm:h-14 bg-slate-50 border-transparent focus:bg-white focus:border-primary-500 rounded-xl sm:rounded-2xl text-slate-900 font-medium"
                           />
                         </div>
                       </div>
@@ -459,14 +461,14 @@ export const Cart = () => {
                         type="submit" 
                         disabled={submitting}
                         className={cn(
-                          "w-full h-16 rounded-2xl text-lg font-black tracking-tight transition-all duration-300 shadow-xl",
+                          "w-full h-14 sm:h-16 rounded-xl sm:rounded-2xl text-base sm:text-lg font-black tracking-tight transition-all duration-300 shadow-xl",
                           paymentColors[paymentMethod],
                           "hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:scale-100"
                         )}
                       >
                         {submitting ? (
                           <div className="flex items-center gap-3">
-                            <Loader2 className="h-6 w-6 animate-spin" />
+                            <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin" />
                             Processing...
                           </div>
                         ) : (
