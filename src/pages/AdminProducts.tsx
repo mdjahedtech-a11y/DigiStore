@@ -185,7 +185,7 @@ export const AdminProducts = () => {
                       </div>
                     </td>
                     <td className="py-4 px-6">
-                      <span className="font-bold text-slate-900">${product.price.toFixed(2)}</span>
+                      <span className="font-bold text-slate-900">৳{product.price.toFixed(2)}</span>
                     </td>
                     <td className="py-4 px-6">
                       <span className="text-sm text-slate-600">{product.sales} sales</span>
@@ -299,7 +299,7 @@ export const AdminProducts = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <label className="block text-sm font-bold text-slate-700">Price ($)</label>
+                    <label className="block text-sm font-bold text-slate-700">Price (৳)</label>
                     <Input 
                       required
                       type="number"

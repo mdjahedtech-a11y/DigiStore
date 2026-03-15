@@ -257,8 +257,8 @@ export const ProductDetails = () => {
                 <div>
                   <p className="text-sm text-slate-500 font-medium mb-1">One-time payment</p>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-slate-900">${product.price.toFixed(2)}</span>
-                    <span className="text-lg text-slate-400 line-through">${(product.price * 1.5).toFixed(2)}</span>
+                    <span className="text-4xl font-bold text-slate-900">৳{product.price.toFixed(2)}</span>
+                    <span className="text-lg text-slate-400 line-through">৳{(product.price * 1.5).toFixed(2)}</span>
                   </div>
                 </div>
                 <div className="text-right">

@@ -240,7 +240,7 @@ export const Dashboard = () => {
                                 </div>
                                 <div className="flex items-center justify-between sm:justify-end gap-6">
                                   <div className="text-right">
-                                    <p className="font-bold text-slate-900">${order.amount.toFixed(2)}</p>
+                                    <p className="font-bold text-slate-900">৳{order.amount.toFixed(2)}</p>
                                     <p className="text-xs text-slate-400">Total Amount</p>
                                   </div>
                                   <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
@@ -283,7 +283,7 @@ export const Dashboard = () => {
                                 <td className="py-4 px-4 text-sm font-medium text-slate-900">{order.transaction_id}</td>
                                 <td className="py-4 px-4 text-sm text-slate-500">{new Date(order.created_at).toLocaleDateString()}</td>
                                 <td className="py-4 px-4 text-sm text-slate-500">{order.payment_method}</td>
-                                <td className="py-4 px-4 text-sm font-bold text-slate-900">${order.amount.toFixed(2)}</td>
+                                <td className="py-4 px-4 text-sm font-bold text-slate-900">৳{order.amount.toFixed(2)}</td>
                                 <td className="py-4 px-4">
                                   <span className={`text-xs font-bold uppercase ${
                                     order.status === 'success' ? 'text-emerald-600' : 

@@ -251,7 +251,7 @@ export const AdminOrders = () => {
                       </div>
                     </td>
                     <td className="py-4 px-6">
-                      <span className="font-bold text-slate-900">${order.amount.toFixed(2)}</span>
+                      <span className="font-bold text-slate-900">৳{order.amount.toFixed(2)}</span>
                     </td>
                     <td className="py-4 px-6">
                       {getStatusBadge(order.status)}
@@ -402,7 +402,7 @@ export const AdminOrders = () => {
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 sm:gap-2 justify-end">
                         <DollarSign className="h-3 w-3 text-emerald-500" /> Amount
                       </p>
-                      <p className="text-xl sm:text-2xl font-black text-slate-900">${selectedOrder.amount.toFixed(2)}</p>
+                      <p className="text-xl sm:text-2xl font-black text-slate-900">৳{selectedOrder.amount.toFixed(2)}</p>
                     </div>
                     <div className="space-y-1">
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 sm:gap-2">

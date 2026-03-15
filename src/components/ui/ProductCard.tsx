@@ -68,7 +68,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className }) 
         
         <div className="flex items-center justify-between mt-auto">
           <span className="text-xl font-bold text-slate-900">
-            ${product.price.toFixed(2)}
+            ৳{product.price.toFixed(2)}
           </span>
           <Button 
             size="sm" 

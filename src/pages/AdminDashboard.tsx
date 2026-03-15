@@ -65,7 +65,7 @@ export const AdminDashboard = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: 'Total Revenue', value: loading ? '...' : `$${totalRevenue.toLocaleString()}`, change: '+20.1%', isPositive: true, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+          { title: 'Total Revenue', value: loading ? '...' : `৳${totalRevenue.toLocaleString()}`, change: '+20.1%', isPositive: true, icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
           { title: 'Total Sales', value: loading ? '...' : totalSales.toString(), change: '+15.2%', isPositive: true, icon: TrendingUp, color: 'text-primary-600', bg: 'bg-primary-100' },
           { title: 'Active Users', value: loading ? '...' : users.length.toString(), change: '+5.4%', isPositive: true, icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-100' },
           { title: 'Total Products', value: loading ? '...' : products.length.toString(), change: '+2.1%', isPositive: true, icon: Package, color: 'text-rose-600', bg: 'bg-rose-100' },
@@ -114,7 +114,7 @@ export const AdminDashboard = () => {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `৳${value}`} />
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
@@ -170,7 +170,7 @@ export const AdminDashboard = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-slate-900">+${order.amount.toFixed(2)}</p>
+                    <p className="text-sm font-bold text-slate-900">+৳{order.amount.toFixed(2)}</p>
                     <p className="text-xs text-slate-500">{new Date(order.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>

@@ -31,7 +31,7 @@ export const AffiliateDashboard = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
-            { title: 'Total Earnings', value: '$1,245.50', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+            { title: 'Total Earnings', value: '৳1,245.50', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-100' },
             { title: 'Total Sales', value: '45', icon: TrendingUp, color: 'text-primary-600', bg: 'bg-primary-100' },
             { title: 'Total Clicks', value: '1,204', icon: MousePointerClick, color: 'text-amber-600', bg: 'bg-amber-100' },
             { title: 'Conversion Rate', value: '3.7%', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-100' },
@@ -104,10 +104,10 @@ export const AffiliateDashboard = () => {
                   </thead>
                   <tbody className="text-sm">
                     {[
-                      { date: 'Oct 12, 2023', product: 'React Mastery Course', amount: '$99.00', commission: '$29.70', status: 'Paid' },
-                      { date: 'Oct 10, 2023', product: 'SaaS Dashboard UI', amount: '$49.00', commission: '$14.70', status: 'Pending' },
-                      { date: 'Oct 08, 2023', product: 'Next.js Boilerplate', amount: '$149.00', commission: '$44.70', status: 'Paid' },
-                      { date: 'Oct 05, 2023', product: 'Notion Template', amount: '$19.00', commission: '$5.70', status: 'Paid' },
+                      { date: 'Oct 12, 2023', product: 'React Mastery Course', amount: '৳99.00', commission: '৳29.70', status: 'Paid' },
+                      { date: 'Oct 10, 2023', product: 'SaaS Dashboard UI', amount: '৳49.00', commission: '৳14.70', status: 'Pending' },
+                      { date: 'Oct 08, 2023', product: 'Next.js Boilerplate', amount: '৳149.00', commission: '৳44.70', status: 'Paid' },
+                      { date: 'Oct 05, 2023', product: 'Notion Template', amount: '৳19.00', commission: '৳5.70', status: 'Paid' },
                     ].map((row, i) => (
                       <tr key={i} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
                         <td className="py-4 text-slate-600">{row.date}</td>
@@ -139,16 +139,16 @@ export const AffiliateDashboard = () => {
             <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-2xl shadow-xl text-white relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/20 rounded-full blur-3xl -mr-10 -mt-10" />
               <h3 className="text-lg font-semibold mb-2 relative z-10">Available Balance</h3>
-              <p className="text-4xl font-bold mb-6 relative z-10">$450.20</p>
+              <p className="text-4xl font-bold mb-6 relative z-10">৳450.20</p>
               
               <div className="space-y-3 relative z-10">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-400">Pending</span>
-                  <span className="font-medium">$14.70</span>
+                  <span className="font-medium">৳14.70</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-400">Total Paid</span>
-                  <span className="font-medium">$780.60</span>
+                  <span className="font-medium">৳780.60</span>
                 </div>
               </div>
               

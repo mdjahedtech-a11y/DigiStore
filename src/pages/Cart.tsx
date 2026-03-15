@@ -182,7 +182,7 @@ export const Cart = () => {
                     {item.product.title}
                   </h3>
                   <p className="text-sm text-slate-500 mb-2">{item.product.category}</p>
-                  <div className="text-lg font-bold text-slate-900">${item.product.price.toFixed(2)}</div>
+                  <div className="text-lg font-bold text-slate-900">৳{item.product.price.toFixed(2)}</div>
                 </div>
 
                 <div className="flex items-center gap-4 bg-slate-50 p-1 rounded-xl border border-slate-100">
@@ -255,22 +255,22 @@ export const Cart = () => {
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-slate-500">
                 <span>Subtotal</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>৳{totalPrice.toFixed(2)}</span>
               </div>
               {appliedCoupon && (
                 <div className="flex justify-between text-emerald-600 font-medium">
                   <span>Discount ({appliedCoupon.discount_percentage}%)</span>
-                  <span>-${discountAmount.toFixed(2)}</span>
+                  <span>-৳{discountAmount.toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between text-slate-500">
                 <span>Tax</span>
-                <span>$0.00</span>
+                <span>৳0.00</span>
               </div>
               <div className="h-px bg-slate-100 my-4" />
               <div className="flex justify-between text-xl font-bold text-slate-900">
                 <span>Total</span>
-                <span>${finalPrice.toFixed(2)}</span>
+                <span>৳{finalPrice.toFixed(2)}</span>
               </div>
             </div>
 
@@ -359,7 +359,7 @@ export const Cart = () => {
                       <div className="relative z-10 flex items-center justify-between">
                         <div>
                           <h2 className="text-xl sm:text-3xl font-black tracking-tight mb-1">Secure Checkout</h2>
-                          <p className="text-white/80 font-medium text-sm sm:text-base">Total Amount: ${finalPrice.toFixed(2)}</p>
+                          <p className="text-white/80 font-medium text-sm sm:text-base">Total Amount: ৳{finalPrice.toFixed(2)}</p>
                         </div>
                         <button 
                           onClick={() => setIsPaymentModalOpen(false)} 
@@ -414,7 +414,7 @@ export const Cart = () => {
                         <div className="relative z-10">
                           <p className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1 sm:mb-2">Payment Instructions</p>
                           <p className="text-xs sm:text-sm font-medium leading-relaxed">
-                            Send <span className="text-primary-400 font-black text-base sm:text-lg">৳{(finalPrice * 120).toFixed(0)}</span> to the following {paymentMethod} number:
+                            Send <span className="text-primary-400 font-black text-base sm:text-lg">৳{finalPrice.toFixed(0)}</span> to the following {paymentMethod} number:
                           </p>
                           <div className="mt-3 sm:mt-4 flex items-center justify-between bg-white/5 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10">
                             <span className="text-base sm:text-xl font-mono font-bold tracking-wider">{paymentNumbers[paymentMethod]}</span>
