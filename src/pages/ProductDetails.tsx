@@ -158,9 +158,9 @@ export const ProductDetails = () => {
   };
 
   const paymentNumbers = {
-    bKash: '01700000000',
-    Nagad: '01800000000',
-    Binance: 'binance_id_here'
+    bKash: '01645921662',
+    Nagad: '01645921662',
+    Binance: 'Mdjahedtech@gmail.com'
   };
 
   const paymentColors = {
@@ -349,10 +349,11 @@ export const ProductDetails = () => {
               className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden"
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+              className="relative w-full max-w-xl bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden"
             >
               <AnimatePresence mode="wait">
                 {isSuccess ? (
@@ -385,7 +386,7 @@ export const ProductDetails = () => {
                   <motion.div key="form" exit={{ opacity: 0, y: -20 }}>
                     {/* Vibrant Header */}
                     <div className={cn(
-                      "p-8 text-white relative overflow-hidden bg-gradient-to-br transition-all duration-500",
+                      "p-6 sm:p-10 text-white relative overflow-hidden bg-gradient-to-br transition-all duration-500",
                       paymentColors[paymentMethod]
                     )}>
                       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
@@ -394,18 +395,21 @@ export const ProductDetails = () => {
                       <div className="relative z-10 flex items-center justify-between">
                         <div>
                           <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-1">Secure Checkout</h2>
-                          <p className="text-white/80 font-medium">Complete your order for {product?.title}</p>
+                          <p className="text-white/90 font-medium text-sm sm:text-base flex items-center gap-2">
+                            <Shield className="h-4 w-4" />
+                            Total: ৳{product?.price.toFixed(2)}
+                          </p>
                         </div>
                         <button 
                           onClick={() => setIsPaymentModalOpen(false)} 
-                          className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+                          className="p-2.5 bg-white/20 hover:bg-white/30 rounded-full transition-all hover:rotate-90 active:scale-90"
                         >
                           <X className="h-6 w-6" />
                         </button>
                       </div>
                     </div>
 
-                    <form onSubmit={handlePaymentSubmit} className="p-8 space-y-8">
+                    <form onSubmit={handlePaymentSubmit} className="p-6 sm:p-10 space-y-6 sm:space-y-8">
                       {/* Payment Methods - Redesigned */}
                       <div className="space-y-4">
                         <label className="text-sm font-black text-slate-400 uppercase tracking-widest">Select Payment Method</label>
@@ -448,12 +452,22 @@ export const ProductDetails = () => {
                         </div>
                         <div className="relative z-10">
                           <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Payment Instructions</p>
-                          <p className="text-sm font-medium leading-relaxed">
-                            Send <span className="text-primary-400 font-black text-lg">৳{product?.price}</span> to the following {paymentMethod} number:
+                          <p className="text-xs sm:text-sm font-medium leading-relaxed">
+                            Send <span className="text-primary-400 font-black text-base sm:text-lg">৳{product?.price.toFixed(0)}</span> to the following {paymentMethod === 'Binance' ? 'Binance ID' : 'number'}:
                           </p>
-                          <div className="mt-4 flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/10">
-                            <span className="text-xl font-mono font-bold tracking-wider">{paymentNumbers[paymentMethod]}</span>
-                            <Button size="sm" variant="ghost" className="text-primary-400 hover:text-primary-300 hover:bg-white/10">Copy</Button>
+                          <div className="mt-3 sm:mt-4 flex items-center justify-between bg-white/5 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 group/copy">
+                            <span className="text-sm sm:text-xl font-mono font-bold tracking-wider truncate mr-2">{paymentNumbers[paymentMethod]}</span>
+                            <Button 
+                              size="sm" 
+                              variant="ghost" 
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText(paymentNumbers[paymentMethod]);
+                              }}
+                              className="text-primary-400 hover:text-primary-300 hover:bg-white/10 h-8 sm:h-10 shrink-0"
+                            >
+                              Copy
+                            </Button>
                           </div>
                         </div>
                       </div>
