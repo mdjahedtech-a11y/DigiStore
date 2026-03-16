@@ -119,6 +119,31 @@ export const Cart = () => {
     Binance: 'from-[#F3BA2F] to-[#F0B90B]'
   };
 
+  const PaymentLogo = ({ method }: { method: 'bKash' | 'Nagad' | 'Binance' }) => {
+    switch (method) {
+      case 'bKash':
+        return (
+          <svg viewBox="0 0 24 24" className="w-full h-full fill-current">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+            <text x="12" y="15.5" fontSize="8" fontWeight="bold" textAnchor="middle" fill="currentColor">bK</text>
+          </svg>
+        );
+      case 'Nagad':
+        return (
+          <svg viewBox="0 0 24 24" className="w-full h-full fill-current">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            <text x="12" y="14" fontSize="6" fontWeight="bold" textAnchor="middle" fill="currentColor">Nagad</text>
+          </svg>
+        );
+      case 'Binance':
+        return (
+          <svg viewBox="0 0 24 24" className="w-full h-full fill-current">
+            <path d="M12 2L4.5 9.5 12 17l7.5-7.5L12 2zm0 12.5L7.5 9.5 12 5l4.5 4.5L12 14.5zM12 18l-3 3 3 3 3-3-3-3z" />
+          </svg>
+        );
+    }
+  };
+
   if (items.length === 0 && checkoutStatus !== 'success') {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
@@ -378,36 +403,57 @@ export const Cart = () => {
                       {/* Payment Methods */}
                       <div className="space-y-3 sm:space-y-4">
                         <label className="text-[10px] sm:text-sm font-black text-slate-400 uppercase tracking-widest">Select Payment Method</label>
-                        <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                          {(['bKash', 'Nagad', 'Binance'] as const).map((method) => (
-                            <button
-                              key={method}
-                              type="button"
-                              onClick={() => setPaymentMethod(method)}
-                              className={cn(
-                                "relative py-3 sm:py-4 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 flex flex-col items-center gap-1 sm:gap-2 group",
-                                paymentMethod === method 
-                                  ? "border-primary-500 bg-primary-50 text-primary-600 shadow-lg shadow-primary-500/10" 
-                                  : "border-slate-100 hover:border-slate-200 text-slate-400 hover:text-slate-600"
-                              )}
-                            >
-                              <div className={cn(
-                                "w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center transition-transform group-hover:scale-110",
-                                paymentMethod === method ? "bg-primary-500 text-white" : "bg-slate-100"
-                              )}>
-                                {method === 'bKash' && <span className="font-bold text-[10px] sm:text-xs">bK</span>}
-                                {method === 'Nagad' && <span className="font-bold text-[10px] sm:text-xs">Ng</span>}
-                                {method === 'Binance' && <span className="font-bold text-[10px] sm:text-xs">Bi</span>}
-                              </div>
-                              <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider">{method}</span>
-                              {paymentMethod === method && (
-                                <motion.div layoutId="active-method" className="absolute -top-1.5 -right-1.5 bg-primary-500 text-white rounded-full p-0.5 sm:p-1 shadow-lg">
-                                  <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3 stroke-[4]" />
-                                </motion.div>
-                              )}
-                            </button>
-                          ))}
-                        </div>
+                          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+                            {(['bKash', 'Nagad', 'Binance'] as const).map((method) => (
+                              <button
+                                key={method}
+                                type="button"
+                                onClick={() => setPaymentMethod(method)}
+                                className={cn(
+                                  "relative py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] border-2 transition-all duration-500 flex flex-col items-center gap-2 group overflow-hidden",
+                                  paymentMethod === method 
+                                    ? "border-transparent text-white shadow-2xl scale-105" 
+                                    : "border-slate-100 bg-slate-50/50 text-slate-400 hover:border-slate-200 hover:bg-white"
+                                )}
+                              >
+                                {paymentMethod === method && (
+                                  <motion.div 
+                                    layoutId="method-bg"
+                                    className={cn("absolute inset-0 bg-gradient-to-br", paymentColors[method])}
+                                    initial={false}
+                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                  />
+                                )}
+                                
+                                <div className={cn(
+                                  "w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-500 relative z-10",
+                                  paymentMethod === method ? "bg-white/20 shadow-inner" : "bg-white shadow-sm"
+                                )}>
+                                  <div className={cn(
+                                    "w-6 h-6 sm:w-8 sm:h-8",
+                                    paymentMethod === method ? "text-white" : cn(
+                                      method === 'bKash' && "text-[#E2136E]",
+                                      method === 'Nagad' && "text-[#F7941D]",
+                                      method === 'Binance' && "text-[#F3BA2F]"
+                                    )
+                                  )}>
+                                    <PaymentLogo method={method} />
+                                  </div>
+                                </div>
+                                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest relative z-10">{method}</span>
+                                
+                                {paymentMethod === method && (
+                                  <motion.div 
+                                    initial={{ scale: 0, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    className="absolute top-2 right-2 bg-white text-slate-900 rounded-full p-1 shadow-lg z-20"
+                                  >
+                                    <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3 stroke-[4]" />
+                                  </motion.div>
+                                )}
+                              </button>
+                            ))}
+                          </div>
                       </div>
 
                       {/* Instructions */}
