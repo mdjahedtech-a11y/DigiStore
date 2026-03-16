@@ -144,7 +144,6 @@ export const AdminProducts = () => {
                 <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Product</th>
                 <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Category</th>
                 <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Price</th>
-                <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Sales</th>
                 <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
                 <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
@@ -186,9 +185,6 @@ export const AdminProducts = () => {
                     </td>
                     <td className="py-4 px-6">
                       <span className="font-bold text-slate-900">৳{product.price.toFixed(2)}</span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="text-sm text-slate-600">{product.sales} sales</span>
                     </td>
                     <td className="py-4 px-6">
                       {product.featured ? (

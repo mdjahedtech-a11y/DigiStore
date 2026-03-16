@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { productApi, orderApi, supabase } from '@/lib/supabase';
 import { Product, Order } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { Star, CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor, Loader2, X, CreditCard, Send, ExternalLink, Check, ShoppingCart } from 'lucide-react';
+import { CheckCircle2, Shield, Download, FileText, Image as ImageIcon, Video, Monitor, Loader2, X, CreditCard, Send, ExternalLink, Check, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Input } from '@/components/ui/Input';
@@ -237,11 +237,6 @@ export const ProductDetails = () => {
                 {getCategoryIcon(product.category)}
                 {product.category}
               </span>
-              <div className="flex items-center gap-1 text-amber-500">
-                <Star className="h-4 w-4 fill-current" />
-                <span className="text-sm font-medium text-slate-700">{product.rating}</span>
-                <span className="text-sm text-slate-400">({product.reviews} reviews)</span>
-              </div>
             </div>
 
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 leading-tight">
@@ -265,7 +260,6 @@ export const ProductDetails = () => {
                   <p className="text-sm font-medium text-emerald-600 flex items-center gap-1 justify-end">
                     <CheckCircle2 className="h-4 w-4" /> In Stock
                   </p>
-                  <p className="text-xs text-slate-400 mt-1">{product.sales} sales</p>
                 </div>
               </div>
 
@@ -397,7 +391,7 @@ export const ProductDetails = () => {
                           <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-1">Secure Checkout</h2>
                           <p className="text-white/90 font-medium text-sm sm:text-base flex items-center gap-2">
                             <Shield className="h-4 w-4" />
-                            Total: ৳{product?.price.toFixed(2)}
+                            Total: {paymentMethod === 'Binance' ? `$${(product?.price / 100).toFixed(2)}` : `৳${product?.price.toFixed(2)}`}
                           </p>
                         </div>
                         <button 
@@ -453,7 +447,9 @@ export const ProductDetails = () => {
                         <div className="relative z-10">
                           <p className="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Payment Instructions</p>
                           <p className="text-xs sm:text-sm font-medium leading-relaxed">
-                            Send <span className="text-primary-400 font-black text-base sm:text-lg">৳{product?.price.toFixed(0)}</span> to the following {paymentMethod === 'Binance' ? 'Binance ID' : 'number'}:
+                            Send <span className="text-primary-400 font-black text-base sm:text-lg">
+                              {paymentMethod === 'Binance' ? `$${(product?.price / 100).toFixed(2)}` : `৳${product?.price.toFixed(0)}`}
+                            </span> to the following {paymentMethod === 'Binance' ? 'Binance ID' : 'number'}:
                           </p>
                           <div className="mt-3 sm:mt-4 flex items-center justify-between bg-white/5 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 group/copy">
                             <span className="text-sm sm:text-xl font-mono font-bold tracking-wider truncate mr-2">{paymentNumbers[paymentMethod]}</span>

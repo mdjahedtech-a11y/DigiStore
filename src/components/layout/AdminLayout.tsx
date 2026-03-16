@@ -21,7 +21,6 @@ const ADMIN_LINKS = [
   { name: 'Products', path: '/admin/products', icon: Package },
   { name: 'Orders', path: '/admin/orders', icon: ShoppingCart },
   { name: 'Users', path: '/admin/users', icon: Users },
-  { name: 'Reviews', path: '/admin/reviews', icon: Star },
   { name: 'Coupons', path: '/admin/coupons', icon: Tag },
   { name: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
 ];

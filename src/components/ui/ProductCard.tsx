@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Star, Download, ShoppingCart, Check } from 'lucide-react';
+import { ShoppingCart, Check } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
@@ -44,18 +44,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className }) 
       </Link>
       
       <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1 text-amber-500">
-            <Star className="h-4 w-4 fill-current" />
-            <span className="text-sm font-medium text-slate-700">{product.rating}</span>
-            <span className="text-xs text-slate-400">({product.reviews})</span>
-          </div>
-          <div className="flex items-center gap-1 text-slate-500 text-xs">
-            <Download className="h-3 w-3" />
-            <span>{product.sales} sales</span>
-          </div>
-        </div>
-        
         <Link to={`/product/${product.id}`}>
           <h3 className="text-lg font-semibold text-slate-900 line-clamp-1 mb-1 group-hover:text-primary-600 transition-colors">
             {product.title}

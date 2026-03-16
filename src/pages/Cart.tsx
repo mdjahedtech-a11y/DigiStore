@@ -362,7 +362,7 @@ export const Cart = () => {
                           <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-1">Secure Checkout</h2>
                           <p className="text-white/90 font-medium text-sm sm:text-base flex items-center gap-2">
                             <ShieldCheck className="h-4 w-4" />
-                            Total: ৳{finalPrice.toFixed(2)}
+                            Total: {paymentMethod === 'Binance' ? `$${(finalPrice / 100).toFixed(2)}` : `৳${finalPrice.toFixed(2)}`}
                           </p>
                         </div>
                         <button 
@@ -418,7 +418,9 @@ export const Cart = () => {
                         <div className="relative z-10">
                           <p className="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1 sm:mb-2">Payment Instructions</p>
                           <p className="text-xs sm:text-sm font-medium leading-relaxed">
-                            Send <span className="text-primary-400 font-black text-base sm:text-lg">৳{finalPrice.toFixed(0)}</span> to the following {paymentMethod === 'Binance' ? 'Binance ID' : 'number'}:
+                            Send <span className="text-primary-400 font-black text-base sm:text-lg">
+                              {paymentMethod === 'Binance' ? `$${(finalPrice / 100).toFixed(2)}` : `৳${finalPrice.toFixed(0)}`}
+                            </span> to the following {paymentMethod === 'Binance' ? 'Binance ID' : 'number'}:
                           </p>
                           <div className="mt-3 sm:mt-4 flex items-center justify-between bg-white/5 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-white/10 group/copy">
                             <span className="text-sm sm:text-xl font-mono font-bold tracking-wider truncate mr-2">{paymentNumbers[paymentMethod]}</span>
